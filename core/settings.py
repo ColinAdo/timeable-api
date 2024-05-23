@@ -115,7 +115,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# djoser settings
+# Django rest_framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
 # Djoser settings
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': 'password-reset/{uid}/{token}',
@@ -124,10 +133,25 @@ DJOSER = {
     'PASSWORD_CHANGED_EMAIL_CONFIRMATION': True,
     'USER_CREATE_PASSWORD_RETYPE': True,
     'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'TOKEN_MODEL': None,
     # 'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': os.getenv('REDIRECT_URLS').split(',')
 }
+
+# Django ses settings
+EMAIL_BACKEND = 'django_ses.SESBackend'
+DEFAULT_FROM_EMAIL = os.getenv('AWS_SES_FROM_EMAIL')
+
+AWS_SES_ACCESS_KEY_ID = os.getenv('AWS_SES_ACCESS_KEY_ID')
+AWS_SES_SECRET_ACCESS_KEY = os.getenv('AWS_SES_SECRET_ACCESS_KEY')
+AWS_SES_REGION_NAME = os.getenv('AWS_SES_REGION_NAME')
+AWS_SES_REGION_ENDPOINT = f'email.{AWS_SES_REGION_NAME}.amazonaws.com'
+AWS_SES_FROM_EMAIL = os.getenv('AWS_SES_FROM_EMAIL')
+
+USE_SES_V2 = True
+DOMAIN = os.getenv('DOMAIN')
+SITE_NAME = 'Timeable'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
