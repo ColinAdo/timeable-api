@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # external libraries
+    'corsheaders,'
     'rest_framework',
     'djoser',
 
@@ -152,6 +153,14 @@ AWS_SES_FROM_EMAIL = os.getenv('AWS_SES_FROM_EMAIL')
 USE_SES_V2 = True
 DOMAIN = os.getenv('DOMAIN')
 SITE_NAME = 'Timeable'
+
+# cors header settings
+CORS_ALLOWED_ORIGINS = os.getenv(
+    'CORS_ALLOWED_ORIGINS',
+    'http://localhost:3000, http://127.0.0.1:3000'
+).split(',')
+
+CORS_ALLOW_CREDENTIALS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
