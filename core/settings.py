@@ -189,6 +189,21 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = ['first_name', 'last_name']
 
+# Github Oauth settings
+SOCIAL_AUTH_GITHUB_KEY = os.getenv('GITHUB_KEY')
+SOCIAL_AUTH_GITHUB_SECRET = os.getenv('GITHUB_SECRET')
+SOCIAL_AUTH_GITHUB_SCOPE = [
+    'read:user',
+    'user:email'
+]
+
+SOCIAL_AUTH_GITHUB_EXTRA_DATA = [
+    ('login', 'username'),
+    ('email', 'email'),
+    ('name', 'name')
+]
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
