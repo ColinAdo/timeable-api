@@ -1,3 +1,14 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Unit
+
+
+class UnitAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "code",
+        "created_at"
+    ]
+
+
+admin.site.register(Unit, UnitAdmin)
