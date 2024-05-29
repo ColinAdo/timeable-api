@@ -4,7 +4,7 @@ from django.db import models
 from units.models import Unit
 
 class Timetable(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     day = models.CharField(max_length=10)
     start_time = models.TimeField()
