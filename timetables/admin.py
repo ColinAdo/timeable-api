@@ -1,3 +1,17 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Timetable
+
+
+class TimetableAdmin(admin.ModelAdmin):
+    list_display = [
+        "user",
+        "unit",
+        "day",
+        "start_time",
+        "end_time",
+        "created_at"
+    ]
+
+
+admin.site.register(Timetable, TimetableAdmin)
