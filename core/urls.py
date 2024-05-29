@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('auths.urls')),
-    path('api/v1/', include('units.api.urls'))
+    path('api/v1/', include('units.api.urls')),
+    path('api/v1/', include('timetables.api.urls'))
 ]
