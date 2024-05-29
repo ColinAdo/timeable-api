@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from units.models import Unit
-# from timetables.generate import generate_timetable
+from timetables.generate import generate_timetable
 
 class UnitUploadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -26,7 +26,7 @@ class UnitUploadView(APIView):
                     name=unit_name
                 )
 
-            # generate_timetable(unit)
+                generate_timetable(unit, request.user)
 
         except pd.errors.EmptyDataError:
             return Response({"message": "Empty file"})
