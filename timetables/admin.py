@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Timetable
+from .models import Timetable, TimetableName
 
 
 class TimetableAdmin(admin.ModelAdmin):
@@ -19,4 +19,14 @@ class TimetableAdmin(admin.ModelAdmin):
     ]
 
 
+class TimetableNameAdmin(admin.ModelAdmin):
+    list_display = [
+        "user",
+        "timetable",
+        "name",
+        "created",
+    ]
+
+
 admin.site.register(Timetable, TimetableAdmin)
+admin.site.register(TimetableName, TimetableNameAdmin)
