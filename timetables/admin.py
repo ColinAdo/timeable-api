@@ -6,11 +6,16 @@ from .models import Timetable
 class TimetableAdmin(admin.ModelAdmin):
     list_display = [
         "user",
-        "unit",
+        "unit_code",
+        "unit_name",
         "day",
         "start_time",
         "end_time",
-        "created_at"
+        "lecturer",
+        "campus",
+        "mode_of_study",
+        "lecture_room",
+        "group",
     ]
 
 
