@@ -22,12 +22,6 @@ class TimetableViewset(viewsets.ModelViewSet):
         return Timetable.objects.filter(user=self.request.user)
 
 
-class TimetableNameView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-    serializer_class = TimetableNameSerializer
-    queryset = TimetableName.objects.all()
-
-
 class TimetableDetailView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = TimetableSerializer
@@ -36,6 +30,13 @@ class TimetableDetailView(generics.ListAPIView):
         pk = self.kwargs.get('pk') 
         return Timetable.objects.filter(batch_id=pk)
     
+
+class TimetableNameViewset(viewsets.ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    serializer_class = TimetableNameSerializer
+
+    def get_queryset(self):
+        return TimetableName.objects.filter(user=self.request.user)
 
 class UnitUploadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
