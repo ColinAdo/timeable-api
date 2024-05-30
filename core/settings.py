@@ -55,7 +55,6 @@ INSTALLED_APPS = [
 
     # local apps
     'auths',
-    'units',
     'timetables'
 ]
 
