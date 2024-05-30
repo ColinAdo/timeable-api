@@ -4,6 +4,7 @@ from django.db import models
 
 class Timetable(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    batch_id = models.CharField(max_length=50, blank=True, null=True)
     day = models.CharField(max_length=10)
     unit_code = models.CharField(max_length=10)
     unit_name = models.CharField(max_length=200)
