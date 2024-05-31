@@ -14,6 +14,7 @@ from timetables.models import Timetable, TimetableName
 import uuid
 
 
+# Timetable viewset
 class TimetableViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = TimetableSerializer
@@ -22,6 +23,7 @@ class TimetableViewset(viewsets.ModelViewSet):
         return Timetable.objects.filter(user=self.request.user)
 
 
+# Timetable detail view
 class TimetableDetailView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = TimetableSerializer
@@ -29,8 +31,9 @@ class TimetableDetailView(generics.ListAPIView):
     def get_queryset(self):
         pk = self.kwargs.get('pk') 
         return Timetable.objects.filter(batch_id=pk)
+ 
     
-
+# Timetable names viewset
 class TimetableNameViewset(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     serializer_class = TimetableNameSerializer
@@ -38,6 +41,7 @@ class TimetableNameViewset(viewsets.ModelViewSet):
     def get_queryset(self):
         return TimetableName.objects.filter(user=self.request.user)
 
+# Upload excel file view 
 class UnitUploadView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [FileUploadParser]
