@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 
+# Timetable model
 class Timetable(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     batch_id = models.CharField(max_length=50, blank=True, null=True)
@@ -23,6 +24,7 @@ class Timetable(models.Model):
     def __str__(self):
         return f'{self.user.username} timetable'
     
+# Timetable name model
 class TimetableName(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
