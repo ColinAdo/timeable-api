@@ -4,7 +4,6 @@ from timetables.models import Timetable, TimetableName
 
 # Timetable serializer
 class TimetableSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Timetable
