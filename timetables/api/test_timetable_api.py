@@ -23,6 +23,7 @@ class TimetableApiTestCase(APITestCase):
 
         cls.timetable = Timetable.objects.create(
             user=cls.user,
+            batch_id='shjsjhssjdjksdsjkdjssjk',
             day='monday',
             unit_code='bcs100',
             unit_name='maths',
@@ -97,6 +98,18 @@ class TimetableApiTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Timetable.objects.count(), 0)
+
+    def test_timetable_detail_to_download(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+        url = reverse('detail', kwargs={'pk': self.timetable.batch_id})
+
+        response = self.client.get(url)
+        obj = Timetable.objects.get(batch_id=self.timetable.batch_id)
+        expected_data = TimetableSerializer(obj).data
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, [expected_data])
+        self.assertContains(response, self.timetable.day)
 
 
 class TimetableNameApiTestCase(APITestCase):
