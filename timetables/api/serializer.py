@@ -13,7 +13,6 @@ class TimetableSerializer(serializers.ModelSerializer):
 # Timetable names serializer
 class TimetableNameSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
-    timetable = TimetableSerializer(read_only=True)
 
     class Meta:
         model = TimetableName
