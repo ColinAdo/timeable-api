@@ -10,7 +10,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from .serializer import TimetableSerializer, TimetableNameSerializer
 from timetables.models import Timetable, TimetableName
 
-
+# Timetable api test case
 class TimetableApiTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
