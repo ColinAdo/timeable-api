@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from .models import Timetable, TimetableName
 
-
+# Timetable admin
 class TimetableAdmin(admin.ModelAdmin):
     list_display = [
         "user",
