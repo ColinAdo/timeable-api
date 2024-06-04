@@ -3,7 +3,7 @@ from django.contrib import admin
 
 from .models import CustomUser
 
-
+# User admin
 class CustomUserAdmin(UserAdmin):
     list_display = [
         "username",
