@@ -112,6 +112,7 @@ class TimetableApiTestCase(APITestCase):
         self.assertContains(response, self.timetable.day)
 
 
+# Timetablenames api
 class TimetableNameApiTestCase(APITestCase):
     @classmethod
     def setUpTestData(cls):
