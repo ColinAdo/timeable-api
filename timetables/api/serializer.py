@@ -21,5 +21,5 @@ class TimetableNameSerializer(serializers.ModelSerializer):
             'name',
             'user',
             'timetable',
-            'created',
+            'created_at',
         )
