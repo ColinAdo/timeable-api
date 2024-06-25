@@ -24,7 +24,7 @@ class TimetableNameAdmin(admin.ModelAdmin):
         "user",
         "timetable",
         "name",
-        "created",
+        "created_at",
     ]
 
 
