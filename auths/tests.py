@@ -3,8 +3,6 @@ from django.test import TestCase
 
 from .models import CustomUser
 
-import os
-
 # Custom user test case
 class CustomUserTestCase(TestCase):
     @classmethod
