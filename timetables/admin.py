@@ -18,7 +18,7 @@ class TimetableAdmin(admin.ModelAdmin):
         "group",
     ]
 
-
+# Timetable name admin
 class TimetableNameAdmin(admin.ModelAdmin):
     list_display = [
         "user",
