@@ -1,17 +1,16 @@
 import pandas as pd
+import uuid
+
 from rest_framework import status, permissions, viewsets, generics
 from rest_framework.parsers import FileUploadParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from timetables.models import Timetable
-from datetime import time
-
 from .serializer import TimetableSerializer, TimetableNameSerializer
 from .permisssions import IsOwnerOrReadOnly
 from timetables.models import Timetable, TimetableName
 
-import uuid
+from datetime import time
 
 
 # Timetable viewset
