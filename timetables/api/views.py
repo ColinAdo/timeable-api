@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializer import TimetableSerializer, TimetableNameSerializer
-from .permisssions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, TimetableName
 
 from datetime import time

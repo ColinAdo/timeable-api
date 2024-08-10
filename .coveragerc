@@ -13,6 +13,8 @@ omit =
     */settings.py
     */urls.py
     */manage.py
+    */auths/*
+    */timetables/api/permissions.py
     .venv/*
 
 [html]
