@@ -66,4 +66,4 @@ class TestTimetableName(TestCase):
         self.assertEqual(Timetable.objects.count(), 1)
         self.assertEqual(obj.user.username, self.user.username)
         self.assertEqual(obj.timetable, self.timetable)
-        self.assertEqual(obj.name, self.timetablename.name)
+        self.assertEqual(str(obj.name), f'{self.timetablename.name}')
