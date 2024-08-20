@@ -5,26 +5,26 @@ from .models import Timetable, TimetableName
 # Timetable admin
 class TimetableAdmin(admin.ModelAdmin):
     list_display = [
-        "user",
-        "unit_code",
-        "unit_name",
-        "day",
-        "start_time",
-        "end_time",
-        "lecturer",
-        "campus",
-        "mode_of_study",
-        "lecture_room",
-        "group",
+        'user',
+        'unit_code',
+        'unit_name',
+        'day',
+        'start_time',
+        'end_time',
+        'lecturer',
+        'campus',
+        'mode_of_study',
+        'lecture_room',
+        'group',
     ]
 
 # Timetable name admin
 class TimetableNameAdmin(admin.ModelAdmin):
     list_display = [
-        "user",
-        "timetable",
-        "name",
-        "created_at",
+        'user',
+        'timetable',
+        'name',
+        'created_at',
     ]
 
 
