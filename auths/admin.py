@@ -6,10 +6,10 @@ from .models import CustomUser
 # User admin
 class CustomUserAdmin(UserAdmin):
     list_display = [
-        "username",
-        "email",
-        "is_active",
-        "is_superuser",
+        'username',
+        'email',
+        'is_active',
+        'is_superuser',
     ]
 
 
