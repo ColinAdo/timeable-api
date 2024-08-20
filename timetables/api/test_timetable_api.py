@@ -77,9 +77,9 @@ class TimetableApiTestCase(APITestCase):
         url = reverse('timetable-detail', kwargs={'pk': self.timetable.id})
         data = {
             "user": self.user.id,
-            "day": "Tuesday",
-            "unit_code": "bcs100",
-            "unit_name": "maths",
+            "day": 'Tuesday',
+            "unit_code": 'bcs100',
+            "unit_name": 'maths',
             "start_time": time(2, 0),
             "end_time": time(16, 0)
         }
@@ -142,9 +142,9 @@ class TimetableNameApiTestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
         url = reverse('timetablenames-list')
         data = {
-            "user": self.user.id,
-            "timetable": self.timetable.id,
-            "name": "testname2"
+            'user': self.user.id,
+            'timetable': self.timetable.id,
+            'name': 'testname2'
         }
         response = self.client.post(url, data, format='json')
 
@@ -181,7 +181,7 @@ class TimetableNameApiTestCase(APITestCase):
         data = {
             "user": self.user.id,
             "timetable": self.timetable.id,
-            "name": "LMR timetable"
+            "name": 'LMR timetable'
         }
         response = self.client.put(url, data, format='json')
         self.timetablename.refresh_from_db()
