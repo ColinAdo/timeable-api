@@ -43,8 +43,8 @@ INSTALLED_APPS = [
     'django_coverage_plugin',
 
     # local apps
-    'auths',
-    'timetables'
+    'auths.apps.AuthsConfig',
+    'timetables.apps.TimetablesConfig'
 ]
 
 MIDDLEWARE = [
