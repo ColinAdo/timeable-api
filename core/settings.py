@@ -130,7 +130,7 @@ DJOSER = {
     'SET_PASSWORD_RETYPE': True,
     'LOGOUT_ON_PASSWORD_CHANGE': True,
     'TOKEN_MODEL': None,
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': os.getenv('REDIRECT_URLS').split(','),
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': os.getenv('REDIRECT_URIS').split(','),
 }
 
 # Django ses settings
