@@ -1,25 +1,39 @@
 from rest_framework import serializers
 
-from timetables.models import Timetable, TimetableName
+from rest_framework import serializers
+from timetables.models import Unit, Timetable
 
-# Timetable serializer
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = '__all__'
+
 class TimetableSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Timetable
         fields = '__all__'
 
 
-# Timetable names serializer
-class TimetableNameSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+# from timetables.models import Timetable, TimetableName
 
-    class Meta:
-        model = TimetableName
-        fields = (
-            'id',
-            'name',
-            'user',
-            'timetable',
-            'created_at',
-        )
+# # Timetable serializer
+# class TimetableSerializer(serializers.ModelSerializer):
+
+#     class Meta:
+#         model = Timetable
+#         fields = '__all__'
+
+
+# # Timetable names serializer
+# class TimetableNameSerializer(serializers.ModelSerializer):
+#     user = serializers.ReadOnlyField(source='user.username')
+
+#     class Meta:
+#         model = TimetableName
+#         fields = (
+#             'id',
+#             'name',
+#             'user',
+#             'timetable',
+#             'created_at',
+#         )
