@@ -1,4 +1,5 @@
 import random
+from datetime import datetime, timedelta
 
 # Initialize the Population
 def initialize_population(units, population_size):
@@ -67,8 +68,6 @@ def crossover(parent1, parent2):
 #             individual[i] = (individual[i][0], day, start_time, end_time)
 #     return individual
 
-import random
-from datetime import datetime, timedelta
 
 def generate_random_time():
     # Generate a random start time between 8 AM and 3 PM (latest start time for a 3-hour class)
