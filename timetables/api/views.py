@@ -1,12 +1,10 @@
 import pandas as pd
 import uuid
 
-from rest_framework import status, permissions, viewsets, generics
-from rest_framework.parsers import FileUploadParser
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-# from .serializer import TimetableSerializer, TimetableNameSerializer
 # from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable
