@@ -172,7 +172,7 @@ AUTH_COOKIE_PATH = '/'
 AUTH_COOKIE_SAMESITE = 'None'
 AUTH_COOKIE_SECURE = os.getenv('AUTH_COOKIE_SECURE', True) == True
 
-# Googl eOauth2 settings
+# Google Oauth2 settings
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.github.GithubOAuth2',
