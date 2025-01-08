@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-# from .models import Timetable, TimetableName
 from .models import Timetable, Unit
 
 admin.site.register(Timetable)
