@@ -13,18 +13,30 @@ from datetime import time
 
 class UploadUnitsView(APIView): 
     def post(self, request, format=None): 
+        batch_id = request.data.get('batch_id')
+        if not batch_id:
+            return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
         file = request.FILES['file'] 
         data = pd.read_excel(file) 
         units = [] 
         for _, row in data.iterrows(): 
-            unit = Unit(unit_name=row['Unit Name'], unit_code=row['Unit Code'], year=row['Year']) 
+            unit = Unit(unit_name=row['Unit Name'], unit_code=row['Unit Code'], year=row['Year'], batch_id=batch_id) 
             units.append(unit) 
         Unit.objects.bulk_create(units) 
         return Response(status=status.HTTP_201_CREATED)
+    
 
 class GenerateTimetableView(APIView):
     def post(self, request, format=None):
-        units = Unit.objects.all()
+        batch_id = request.data.get('batch_id')
+        if not batch_id:
+            return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        units = Unit.objects.filter(batch_id=batch_id)
+        if not units.exists():
+            return Response({"error": "No units found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
+        
         units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
         best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01)
         response_data = [ 
@@ -40,8 +52,6 @@ class GenerateTimetableView(APIView):
         ]
 
         return Response(response_data, status=status.HTTP_200_OK)
-
-
 
 # # Timetable viewset
 # class TimetableViewset(viewsets.ModelViewSet):
