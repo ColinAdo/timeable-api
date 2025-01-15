@@ -62,24 +62,6 @@ class GenerateTimetableView(APIView):
 #         return Timetable.objects.filter(user=self.request.user)
 
 
-# # Timetable detail view
-# class TimetableDetailView(generics.ListAPIView):
-#     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-#     serializer_class = TimetableSerializer
-
-#     def get_queryset(self):
-#         pk = self.kwargs.get('pk') 
-#         return Timetable.objects.filter(batch_id=pk)
- 
-    
-# # Timetable names viewset
-# class TimetableNameViewset(viewsets.ModelViewSet):
-#     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
-#     serializer_class = TimetableNameSerializer
-
-#     def get_queryset(self):
-#         return TimetableName.objects.filter(user=self.request.user)
-
 # # Upload excel file view 
 # class UnitUploadView(APIView):
 #     permission_classes = [permissions.IsAuthenticated]
