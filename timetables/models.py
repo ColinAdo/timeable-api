@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 class Unit(models.Model):
+    batch_id = models.CharField(max_length=50, blank=True, null=True)
     unit_name = models.CharField(max_length=100)
     unit_code = models.CharField(max_length=10)
     year = models.CharField(max_length=10)
