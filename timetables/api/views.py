@@ -11,6 +11,7 @@ from .genetic_algoritm import generate_timetable
 
 from datetime import time
 
+# Upload excel file view
 class UploadUnitsView(APIView): 
     def post(self, request, format=None): 
         batch_id = request.data.get('batch_id')
@@ -26,7 +27,7 @@ class UploadUnitsView(APIView):
         Unit.objects.bulk_create(units) 
         return Response(status=status.HTTP_201_CREATED)
     
-
+# Generate timetable view
 class GenerateTimetableView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
