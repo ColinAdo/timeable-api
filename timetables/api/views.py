@@ -1,21 +1,17 @@
 import pandas as pd
-import uuid
 import os
+
+from django.http import HttpResponse
+from django.core.mail import EmailMessage
 
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from core import settings
 
-from django.http import HttpResponse
-from django.core.mail import EmailMessage
-
-
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable
-
-from datetime import time
 
 # Upload excel file view
 class UploadUnitsView(APIView): 
