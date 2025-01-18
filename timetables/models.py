@@ -8,10 +8,13 @@ class Unit(models.Model):
     year = models.CharField(max_length=10)
 
 class Timetable(models.Model):
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True, blank=True)
+    # unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True, blank=True)
+    batch_id = models.CharField(max_length=50, blank=True, null=True)
+    unit_code = models.CharField(max_length=10, blank=True, null=True)
+    unit_name = models.CharField(max_length=100, blank=True, null=True)
     day = models.CharField(max_length=10)
-    start_time = models.TimeField()
-    end_time = models.TimeField()
+    start_time = models.CharField(max_length=10)
+    end_time = models.CharField(max_length=10)
 
 
 # Timetable model
