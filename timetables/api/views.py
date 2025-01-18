@@ -1,9 +1,11 @@
 import pandas as pd
 import uuid
+import os
 
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.http import HttpResponse
 
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
@@ -40,16 +42,66 @@ class GenerateTimetableView(APIView):
         
         units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
         best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01)
-        response_data = [ 
-            { 
-                'unit_name': session[0][0], 
-                'unit_code': session[0][1], 
-                'year': session[0][2], 
-                'day': session[1], 
-                'start_time': session[2], 
-                'end_time': session[3] 
-            } 
-            for session in best_timetable 
-        ]
+        # response_data = [ 
+        #     { 
+        #         'unit_name': session[0][0], 
+        #         'unit_code': session[0][1], 
+        #         'year': session[0][2], 
+        #         'day': session[1], 
+        #         'start_time': session[2], 
+        #         'end_time': session[3] 
+        #     } 
+        #     for session in best_timetable 
+        # ]
 
-        return Response(response_data, status=status.HTTP_200_OK)
+        # return Response(response_data, status=status.HTTP_200_OK)
+
+        for session in best_timetable: 
+            Timetable.objects.create( 
+                unit_name=session[0][0],
+                unit_code=session[0][1],
+                day=session[1], 
+                start_time=session[2], 
+                end_time=session[3], 
+                batch_id=batch_id 
+            )
+        return Response({"message": "Timetable generated successfully"})
+    
+class ExportTimetableView(APIView):
+    def post(self, request, format=None):
+        batch_id = request.data.get('batch_id')
+        if not batch_id:
+            return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        timetables = Timetable.objects.filter(batch_id=batch_id)
+        if not timetables.exists():
+            return Response({"error": "No timetable found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Prepare data for the DataFrame
+        data = [
+            {
+                'Unit Name': timetable.unit_name,
+                'Unit Code': timetable.unit_code,
+                'Day': timetable.day,
+                'Start Time': timetable.start_time,
+                'End Time': timetable.end_time
+            }
+            for timetable in timetables
+        ]
+        
+        # Create DataFrame
+        df = pd.DataFrame(data)
+        
+        # Export to Excel
+        file_name = f'timetable_{batch_id}.xlsx'
+        df.to_excel(file_name, index=False)
+        
+        # Create a response to return the file
+        with open(file_name, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = f'attachment; filename={file_name}'
+
+        # Clean up the file after sending the response
+        os.remove(file_name)
+        
+        return response
