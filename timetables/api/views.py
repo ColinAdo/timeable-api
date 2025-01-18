@@ -5,7 +5,11 @@ import os
 from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from core import settings
+
 from django.http import HttpResponse
+from django.core.mail import EmailMessage
+
 
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
@@ -105,3 +109,48 @@ class ExportTimetableView(APIView):
         os.remove(file_name)
         
         return response
+    
+class SendTimetableEmailView(APIView):
+    def post(self, request, format=None):
+        batch_id = request.data.get('batch_id')
+        email = request.data.get('email')
+        if not batch_id or not email:
+            return Response({"error": "batch_id and email are required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        timetables = Timetable.objects.filter(batch_id=batch_id)
+        if not timetables.exists():
+            return Response({"error": "No timetable found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Prepare data for the DataFrame
+        data = [
+            {
+                'Unit Name': timetable.unit_name,
+                'Unit Code': timetable.unit_code,
+                'Day': timetable.day,
+                'Start Time': timetable.start_time,
+                'End Time': timetable.end_time
+            }
+            for timetable in timetables
+        ]
+        
+        # Create DataFrame
+        df = pd.DataFrame(data)
+        
+        # Export to Excel
+        file_name = f'timetable_{batch_id}.xlsx'
+        df.to_excel(file_name, index=False)
+
+        # Send email with attachment
+        email_message = EmailMessage(
+            subject='Your Timetable',
+            body='Please find the attached timetable.',
+            from_email=settings.AWS_SES_FROM_EMAIL,
+            to=[email],
+        )
+        email_message.attach_file(file_name)
+        email_message.send()
+
+        # Clean up the file after sending the email
+        os.remove(file_name)
+        
+        return Response({"message": "Timetable sent successfully to the provided email"}, status=status.HTTP_200_OK)
