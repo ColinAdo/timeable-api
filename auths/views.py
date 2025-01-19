@@ -4,9 +4,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from djoser.social.views import ProviderAuthView
 from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
+    TokenVerifyView,
     TokenRefreshView,
-    TokenVerifyView
+    TokenObtainPairView,
 )
 
 # Custm provider auth
