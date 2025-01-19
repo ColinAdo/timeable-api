@@ -1,10 +1,8 @@
-from django.contrib.auth import get_user_model
+from datetime import time
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 
 from .models import Timetable, TimetableName
-
-from datetime import time
-
 
 # Timetable test case class                                                                                 
 class TestTimetable(TestCase):
