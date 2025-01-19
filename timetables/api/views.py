@@ -1,14 +1,14 @@
-import pandas as pd
 import os
+import pandas as pd
 
 from django.http import HttpResponse
 from django.core.mail import EmailMessage
 
-from rest_framework import status, permissions
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from core import settings
+from rest_framework.response import Response
+from rest_framework import status, permissions
 
+from core import settings
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable
