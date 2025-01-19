@@ -2,8 +2,8 @@ from django.urls import path
 
 from .views import (
     UploadUnitsView, 
-    GenerateTimetableView, 
     ExportTimetableView,
+    GenerateTimetableView, 
     SendTimetableEmailView
 )
 
