@@ -8,7 +8,6 @@ class Unit(models.Model):
     year = models.CharField(max_length=10)
 
 class Timetable(models.Model):
-    # unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True, blank=True)
     batch_id = models.CharField(max_length=50, blank=True, null=True)
     unit_code = models.CharField(max_length=10, blank=True, null=True)
     unit_name = models.CharField(max_length=100, blank=True, null=True)
@@ -20,12 +19,6 @@ class Timetable(models.Model):
 # Timetable model
 # class Timetable(models.Model):
 #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-#     batch_id = models.CharField(max_length=50, blank=True, null=True)
-#     day = models.CharField(max_length=10)
-#     unit_code = models.CharField(max_length=10)
-#     unit_name = models.CharField(max_length=200)
-#     start_time = models.TimeField()
-#     end_time = models.TimeField()
 #     lecturer = models.CharField(max_length=200, null=True, blank=True)
 #     campus = models.CharField(max_length=200, null=True, blank=True)
 #     mode_of_study = models.CharField(max_length=200, null=True, blank=True)
