@@ -2,7 +2,14 @@ from django.contrib import admin
 
 from .models import Timetable, Unit
 
-admin.site.register(Unit)
+# Unit admin
+class UnitAdmin(admin.ModelAdmin):
+    list_display = [
+        'batch_id',
+        'unit_code',
+        'unit_name',
+        'year',
+    ]
 
 # Timetable admin
 class TimetableAdmin(admin.ModelAdmin):
@@ -31,4 +38,5 @@ class TimetableAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Timetable, TimetableAdmin)
+admin.site.register(Unit, UnitAdmin)
 # admin.site.register(TimetableName, TimetableNameAdmin)
