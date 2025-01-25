@@ -13,6 +13,7 @@ from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable
 
+# Get timetable
 class TimetableView(APIView):
     def get(self, request, batch_id, format=None):
         timetables = Timetable.objects.filter(batch_id=batch_id)
