@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    TimetableView,
     UploadUnitsView, 
     ExportTimetableView,
     GenerateTimetableView, 
@@ -12,4 +13,5 @@ urlpatterns = [
     path('generate/timetable/', GenerateTimetableView.as_view(), name='generate_timetable'),
     path('export/timetable/', ExportTimetableView.as_view(), name='export_timetable'),
     path('export/timetable/email/', SendTimetableEmailView.as_view(), name='export_timetable_email'),
+    path('timetable/<str:batch_id>/', TimetableView.as_view(), name='timetable'),
 ]
