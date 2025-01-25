@@ -150,7 +150,6 @@ class SendTimetableEmailView(APIView):
         email_message.attach_file(file_name)
         email_message.send()
 
-        # Clean up the file after sending the email
         os.remove(file_name)
         
         return Response({"message": "Timetable sent successfully to the provided email"}, status=status.HTTP_200_OK)
