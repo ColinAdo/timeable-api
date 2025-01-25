@@ -58,19 +58,6 @@ class GenerateTimetableView(APIView):
         
         units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
         best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01)
-        # response_data = [ 
-        #     { 
-        #         'unit_name': session[0][0], 
-        #         'unit_code': session[0][1], 
-        #         'year': session[0][2], 
-        #         'day': session[1], 
-        #         'start_time': session[2], 
-        #         'end_time': session[3] 
-        #     } 
-        #     for session in best_timetable 
-        # ]
-
-        # return Response(response_data, status=status.HTTP_200_OK)
 
         for session in best_timetable: 
             Timetable.objects.create( 
