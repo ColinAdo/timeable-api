@@ -122,7 +122,6 @@ class SendTimetableEmailView(APIView):
         if not timetables.exists():
             return Response({"error": "No timetable found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
         
-        # Prepare data for the DataFrame
         data = [
             {
                 'Unit Name': timetable.unit_name,
