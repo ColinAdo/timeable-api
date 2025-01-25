@@ -13,6 +13,22 @@ from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable
 
+class TimetableView(APIView):
+    def get(self, request, batch_id, format=None):
+        timetables = Timetable.objects.filter(batch_id=batch_id)
+        response_data = [
+            {
+                'name': timetable.name,
+                'unit_name': timetable.unit_name,
+                'unit_code': timetable.unit_code,
+                'day': timetable.day,
+                'start_time': timetable.start_time,
+                'end_time': timetable.end_time
+            }
+            for timetable in timetables
+        ]
+        return Response(response_data, status=status.HTTP_200_OK)
+
 # Upload excel file view
 class UploadUnitsView(APIView): 
     def post(self, request, format=None): 
