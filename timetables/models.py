@@ -15,10 +15,6 @@ class Timetable(models.Model):
     day = models.CharField(max_length=10)
     start_time = models.CharField(max_length=10)
     end_time = models.CharField(max_length=10)
-
-
-# Timetable model
-# class Timetable(models.Model):
 #     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 #     lecturer = models.CharField(max_length=200, null=True, blank=True)
 #     campus = models.CharField(max_length=200, null=True, blank=True)
@@ -32,13 +28,3 @@ class Timetable(models.Model):
 
 #     def __str__(self):
 #         return f'{self.user.username} timetable'
-    
-# # Timetable name model
-# class TimetableName(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
-#     timetable = models.ForeignKey(Timetable, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=200)
-#     created_at = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return f'{self.name}'

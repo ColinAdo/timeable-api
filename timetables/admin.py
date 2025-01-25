@@ -28,16 +28,5 @@ class TimetableAdmin(admin.ModelAdmin):
         # 'group',
     ]
 
-# # Timetable name admin
-# class TimetableNameAdmin(admin.ModelAdmin):
-#     list_display = [
-#         'user',
-#         'timetable',
-#         'name',
-#         'created_at',
-#     ]
-
-
 admin.site.register(Timetable, TimetableAdmin)
 admin.site.register(Unit, UnitAdmin)
-# admin.site.register(TimetableName, TimetableNameAdmin)
