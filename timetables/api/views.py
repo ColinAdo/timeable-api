@@ -63,7 +63,8 @@ class GenerateTimetableView(APIView):
                 day=session[1], 
                 start_time=session[2], 
                 end_time=session[3], 
-                batch_id=batch_id 
+                batch_id=batch_id,
+                name=batch_id 
             )
         return Response({"message": "Timetable generated successfully"})
     
