@@ -9,6 +9,7 @@ class Unit(models.Model):
 
 class Timetable(models.Model):
     batch_id = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
     unit_code = models.CharField(max_length=10, blank=True, null=True)
     unit_name = models.CharField(max_length=100, blank=True, null=True)
     day = models.CharField(max_length=10)

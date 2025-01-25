@@ -15,6 +15,7 @@ class UnitAdmin(admin.ModelAdmin):
 class TimetableAdmin(admin.ModelAdmin):
     list_display = [
         # 'user',
+        'name',
         'unit_code',
         'unit_name',
         'day',
