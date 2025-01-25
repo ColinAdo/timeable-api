@@ -2,7 +2,7 @@ from datetime import time
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from .models import Timetable, TimetableName
+from .models import Timetable
 
 # Timetable test case class                                                                                 
 class TestTimetable(TestCase):
@@ -53,15 +53,3 @@ class TestTimetableName(TestCase):
             start_time=time(8, 0),
             end_time=time(10, 0)
         )
-        cls.timetablename = TimetableName.objects.create(
-            user=cls.user,
-            timetable=cls.timetable,
-            name='testname'
-        )
-
-    def test_timetablename_content(self):
-        obj = TimetableName.objects.get(id=1)
-        self.assertEqual(Timetable.objects.count(), 1)
-        self.assertEqual(obj.user.username, self.user.username)
-        self.assertEqual(obj.timetable, self.timetable)
-        self.assertEqual(str(obj.name), f'{self.timetablename.name}')
