@@ -111,6 +111,7 @@ class ExportTimetableView(APIView):
         
         return response
     
+# Send timetable email view
 class SendTimetableEmailView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
