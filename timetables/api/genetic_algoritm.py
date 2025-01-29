@@ -7,6 +7,7 @@ from groq import Groq
 from django.conf import settings
 from datetime import datetime, timedelta
 
+# Double check timetable using groq api 
 def double_check_timetable(timetable):
     client = Groq(
     api_key=os.environ.get(settings.GROQ_API_KEY),
