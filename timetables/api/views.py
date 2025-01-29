@@ -11,7 +11,7 @@ from rest_framework import status, permissions
 from core import settings
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
-from .genetic_algoritm import generate_timetable
+from .genetic_algoritm import generate_timetable, double_check_timetable
 
 # Get timetable
 class TimetableView(APIView):
@@ -60,17 +60,33 @@ class GenerateTimetableView(APIView):
         units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
         best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01)
 
-        for session in best_timetable: 
+        response_data = [
+            {
+                # 'name': batch_id,
+                'unit_name': session[0][0],
+                'unit_code': session[0][1],
+                'year': session[0][2],
+                'day': session[1],
+                'start_time': session[2],
+                'end_time': session[3]
+            }
+            for session in best_timetable
+        ]
+
+        corrected_timetable = double_check_timetable(response_data)
+        for session in corrected_timetable: 
             Timetable.objects.create( 
-                unit_name=session[0][0],
-                unit_code=session[0][1],
-                day=session[1], 
-                start_time=session[2], 
-                end_time=session[3], 
+                unit_name=session["unit_name"],  
+                unit_code=session["unit_code"],  
+                day=session["day"],              
+                start_time=session["start_time"],
+                end_time=session["end_time"],    
                 batch_id=batch_id,
                 name=batch_id 
             )
-        return Response({"message": "Timetable generated successfully"})
+
+        return Response(corrected_timetable, status=status.HTTP_200_OK)
+        # return Response({"message": "Timetable generated successfully"})
     
 class ExportTimetableView(APIView):
     def post(self, request, format=None):
