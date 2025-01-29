@@ -1,9 +1,11 @@
-import random
-from datetime import datetime, timedelta
-from groq import Groq
 import os
 import json
+import random
+
+from groq import Groq
+
 from django.conf import settings
+from datetime import datetime, timedelta
 
 def double_check_timetable(timetable):
     client = Groq(
