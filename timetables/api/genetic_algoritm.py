@@ -1,6 +1,29 @@
 import random
 from datetime import datetime, timedelta
+from groq import Groq
+import os
+import json
+from django.conf import settings
 
+def double_check_timetable(timetable):
+    client = Groq(
+    api_key=os.environ.get(settings.GROQ_API_KEY),
+    )
+    constrains = "Analyze the timetable data and insure that there are no classes between at 11:30 AM and 12:00 PM and that there are no more than 2 units for the same academic year and semester in a day, if any collision please correct it and return the timetable data in a plain JSON format, like the following: [ { unit_name: 'value', unit_code: 'value'... } ]. Only return the JSON data, without any additional text or quotes."
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{timetable} {constrains}",
+            }
+        ],
+        model="llama-3.3-70b-versatile",
+    )
+
+    response_content = chat_completion.choices[0].message.content
+    return json.loads(response_content)
+    
 # helper function
 def generate_random_time():
     start_hour = random.randint(8, 15)
