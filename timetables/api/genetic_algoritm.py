@@ -70,8 +70,6 @@ def fitness_function(timetable, first_constrain, second_constrain):
             constrain_times.append(start_time.strftime("%H:%M:%S"))
         start_time += timedelta(minutes=30)  # Move in 30-min intervals
 
-    print(f"🚫 Fully Restricted Start Times: {constrain_times}")  # Debugging Output
-
     for unit, day, start_time, end_time in timetable:
         if day not in daily_units:
             daily_units[day] = []
