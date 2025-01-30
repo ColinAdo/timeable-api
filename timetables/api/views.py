@@ -47,7 +47,7 @@ class UploadUnitsView(APIView):
         return Response(status=status.HTTP_201_CREATED)
     
 # Generate timetable view
-class GenerateTimetableView(APIView):
+# class GenerateTimetableView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
         if not batch_id:
@@ -87,7 +87,102 @@ class GenerateTimetableView(APIView):
 
         return Response(corrected_timetable, status=status.HTTP_200_OK)
         # return Response({"message": "Timetable generated successfully"})
-    
+# class GenerateTimetableView(APIView):
+    def post(self, request, format=None):
+        batch_id = request.data.get('batch_id')
+        start_time = request.data.get('start_time', '08:00')
+        end_time = request.data.get('end_time', '18:00')
+        duration = request.data.get('duration', 3)
+        constrain = request.data.get('constrain', 'Just')
+
+        print(constrain)
+
+        if not batch_id:
+            return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        units = Unit.objects.filter(batch_id=batch_id)
+        if not units.exists():
+            return Response({"error": "No units found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
+        
+        units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
+        best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01, start_time=start_time, end_time=end_time, duration=duration)
+
+        response_data = [
+            {
+                'unit_name': session[0][0],
+                'unit_code': session[0][1],
+                'year': session[0][2],
+                'day': session[1],
+                'start_time': session[2],
+                'end_time': session[3]
+            }
+            for session in best_timetable
+        ]
+
+        corrected_timetable = double_check_timetable(response_data, constrain)
+        for session in corrected_timetable: 
+            Timetable.objects.create( 
+                unit_name=session["unit_name"],  
+                unit_code=session["unit_code"],  
+                day=session["day"],              
+                start_time=session["start_time"],
+                end_time=session["end_time"],    
+                batch_id=batch_id,
+                name=batch_id 
+            )
+
+        return Response(corrected_timetable, status=status.HTTP_200_OK)
+class GenerateTimetableView(APIView):
+    def post(self, request, format=None):
+        try:
+            batch_id = request.data.get('batch_id')
+            start_time = request.data.get('start_time', '08:00')
+            end_time = request.data.get('end_time', '18:00')
+            duration = request.data.get('duration', 3)
+            prompt = request.data.get('prompt', 'Just')
+            
+            print(prompt)
+            if not batch_id:
+                return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            units = Unit.objects.filter(batch_id=batch_id)
+            if not units.exists():
+                return Response({"error": "No units found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
+            
+            units_list = [(unit.unit_name, unit.unit_code, unit.year) for unit in units]
+            best_timetable = generate_timetable(units_list, population_size=50, generations=100, mutation_rate=0.01, start_time=start_time, end_time=end_time, duration=duration)
+
+            response_data = [
+                {
+                    'unit_name': session[0][0],
+                    'unit_code': session[0][1],
+                    'year': session[0][2],
+                    'day': session[1],
+                    'start_time': session[2],
+                    'end_time': session[3]
+                }
+                for session in best_timetable
+            ]
+
+            corrected_timetable = double_check_timetable(response_data, prompt, duration)
+            for session in corrected_timetable: 
+                Timetable.objects.create( 
+                    unit_name=session["unit_name"],  
+                    unit_code=session["unit_code"],  
+                    day=session["day"],              
+                    start_time=session["start_time"],
+                    end_time=session["end_time"],    
+                    batch_id=batch_id,
+                    name=batch_id 
+                )
+
+            return Response(corrected_timetable, status=status.HTTP_200_OK)
+        
+        except Exception as e:
+            print(f"Error in GenerateTimetableView: {e}")
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class ExportTimetableView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
