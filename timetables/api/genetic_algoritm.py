@@ -52,42 +52,6 @@ def initialize_population(units, population_size, start_time, end_time, duration
 
 
 # Define the Fitness Function
-# def fitness_function(timetable):
-    score = 0
-    daily_units = {}
-    
-    for unit, day, start_time, end_time in timetable:
-        if day not in daily_units:
-            daily_units[day] = []
-        daily_units[day].append(unit)
-        
-        # Penalize if a class starts at 11:30
-        if start_time == datetime.strptime("11:30", "%H:%M").time():
-            score -= 10
-    
-    # Check for constraints and calculate the score
-    for day, units in daily_units.items():
-        year_semester_count = {}
-        for unit in units:
-            year_semester = unit[2]  # Year and semester format like Y1S1, Y1S2
-            if year_semester not in year_semester_count:
-                year_semester_count[year_semester] = 0
-            year_semester_count[year_semester] += 1
-        
-        # Penalize if there are more than 2 units for the same academic year and semester in a day
-        for year_semester, count in year_semester_count.items():
-            if count > 2:
-                score -= 10
-        if all(count <= 2 for count in year_semester_count.values()):
-            score += 1
-    
-    if score == 0:
-        score = 1 
-
-    # print(f"Score: {score}") 
-    return score
-from datetime import datetime, timedelta
-
 def fitness_function(timetable, first_constrain, second_constrain):
     score = 0
     daily_units = {}
