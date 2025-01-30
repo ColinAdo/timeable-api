@@ -35,35 +35,6 @@ def double_check_timetable(timetable, prompt):
 
 
 # Initialize the Population
-# def initialize_population(units, population_size):
-    population = []
-    for _ in range(population_size):
-        timetable = []
-        for unit in units:
-            valid = False
-            while not valid:
-                day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-                start_time, end_time = generate_random_time()
-                if start_time != datetime.strptime("11:30", "%H:%M").time():
-                    valid = True
-                    timetable.append((unit, day, start_time, end_time))
-        population.append(timetable)
-    return population
-
-# def initialize_population(units, population_size, start_time, end_time, duration):
-    population = []
-    for _ in range(population_size):
-        timetable = []
-        for unit in units:
-            valid = False
-            while not valid:
-                day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-                start, end = generate_random_time(start_time, end_time, duration)
-                if start != datetime.strptime("11:30", "%H:%M").time():
-                    valid = True
-                    timetable.append((unit, day, start, end))
-        population.append(timetable)
-    return population
 def initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain):
     population = []
     for _ in range(population_size):
