@@ -115,31 +115,6 @@ def crossover(parent1, parent2):
     return offspring1, offspring2
 
 # Helper function
-# def generate_random_time():
-    # Generate a random start time between 8 AM and 3 PM (latest start time for a 3-hour class)
-    start_hour = random.randint(8, 15)
-    start_time = datetime.strptime(f"{start_hour}:00", "%H:%M").time()
-    end_time = (datetime.combine(datetime.today(), start_time) + timedelta(hours=3)).time()
-    return start_time, end_time
-# def generate_random_time(start_time, end_time, duration):
-    start_datetime = datetime.strptime(start_time, "%H:%M")
-    end_datetime = datetime.strptime(end_time, "%H:%M")
-    latest_start_time = end_datetime - timedelta(hours=duration)
-    
-    random_start = start_datetime + timedelta(minutes=30*random.randint(0, ((latest_start_time - start_datetime).seconds // 1800)))
-    random_end = random_start + timedelta(hours=duration)
-    
-    return random_start.time(), random_end.time()
-
-
-# Mutation
-# def mutation(individual, mutation_rate):
-    for i in range(len(individual)):
-        if random.random() < mutation_rate:
-            day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-            start_time, end_time = generate_random_time()
-            individual[i] = (individual[i][0], day, start_time, end_time)
-    return individual
 def generate_random_time(start_time, end_time, duration, first_constrain, second_constrain):
     start_datetime = datetime.strptime(start_time, "%H:%M")
     end_datetime = datetime.strptime(end_time, "%H:%M")
