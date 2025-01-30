@@ -151,35 +151,7 @@ def mutation(individual, mutation_rate, start_time, end_time, duration, first_co
     return individual
 
 
-# def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration):
-    population = initialize_population(units, population_size, start_time, end_time, duration)
-    for generation in range(generations):
-        fitness_values = [fitness_function(timetable) for timetable in population]
-        # print(f"Generation {generation}, Fitness Values: {fitness_values}")  # Debugging print
-
-        if sum(fitness_values) == 0:
-            # print("All fitness values are zero, adjusting fitness values to avoid stagnation.")
-            fitness_values = [1 for _ in fitness_values]  # Adjust fitness values to avoid zero weights
-
-        try:
-            population = selection(population, fitness_values)
-        except ValueError as e:
-            # print(f"Selection error: {e}")
-            # print(f"Fitness values: {fitness_values}")
-            # Fallback to a random selection to avoid the error
-            population = random.choices(population, k=len(population))
-
-        next_generation = []
-        for i in range(0, len(population), 2):
-            parent1 = population[i]
-            parent2 = population[i + 1] if i + 1 < len(population) else population[0]
-            offspring1, offspring2 = crossover(parent1, parent2)
-            next_generation.append(mutation(offspring1, mutation_rate, start_time, end_time, duration))
-            next_generation.append(mutation(offspring2, mutation_rate, start_time, end_time, duration))
-        population = next_generation
-
-    best_timetable = max(population, key=fitness_function)
-    return best_timetable
+# Generate timetable function
 def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
     population = initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain)
     for generation in range(generations):
