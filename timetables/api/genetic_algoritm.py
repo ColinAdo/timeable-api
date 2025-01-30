@@ -2,7 +2,7 @@ import os
 import json
 import random
 
-from groq import Groq
+from groq import Groq # type: ignore
 
 from django.conf import settings
 from datetime import datetime, timedelta
