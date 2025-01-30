@@ -139,7 +139,7 @@ def generate_random_time(start_time, end_time, duration, first_constrain, second
 
     return random_start.strftime("%H:%M:%S"), random_end.strftime("%H:%M:%S")
 
-
+# mutation function
 def mutation(individual, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
     for i in range(len(individual)):
         if random.random() < mutation_rate:
