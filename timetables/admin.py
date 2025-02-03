@@ -28,7 +28,7 @@ class TimetableAdmin(admin.ModelAdmin):
         # 'group',
     ]
 
-# Unit admin
+# Subscription admin
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = [
         'user',
