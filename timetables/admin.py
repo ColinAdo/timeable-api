@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Timetable, Unit
+from .models import Timetable, Unit, Subscription
 
 # Unit admin
 class UnitAdmin(admin.ModelAdmin):
@@ -28,5 +28,15 @@ class TimetableAdmin(admin.ModelAdmin):
         # 'group',
     ]
 
+# Unit admin
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'user',
+        'status',
+        'tier',
+        'amount',
+    ]
+
 admin.site.register(Timetable, TimetableAdmin)
 admin.site.register(Unit, UnitAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)
