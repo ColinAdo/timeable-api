@@ -51,13 +51,13 @@ class GenerateTimetableView(APIView):
     def post(self, request, format=None):
         try:
             batch_id = request.data.get('batch_id')
-            start_time = request.data.get('start_time', '08:00')
-            end_time = request.data.get('end_time', '20:30')
-            duration = request.data.get('duration', 3)
-            first_constrain = request.data.get('first_constrain', '11:30')
-            second_constrain = request.data.get('second_constrain', '12:00')
+            start_time = request.data.get('start_time')
+            end_time = request.data.get('end_time')
+            duration = request.data.get('duration')
+            first_constrain = request.data.get('first_constrain')
+            second_constrain = request.data.get('second_constrain')
             prompt = request.data.get('prompt', 'Just')
-            
+
             if not batch_id:
                 return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
             
