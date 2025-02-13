@@ -110,7 +110,7 @@ class GenerateTimetableView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+# Export timetable view
 class ExportTimetableView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
