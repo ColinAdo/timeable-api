@@ -33,6 +33,33 @@ def double_check_timetable(timetable, prompt):
         print(f"Error in double_check_timetable: {e}")
         raise
 
+# Helper function
+def generate_random_time(start_time, end_time, duration, first_constrain, second_constrain):
+    start_datetime = datetime.strptime(start_time, "%H:%M")
+    end_datetime = datetime.strptime(end_time, "%H:%M")
+    latest_start_time = end_datetime - timedelta(hours=duration)
+
+    # Only parse constraints if they are provided
+    constrain_start = datetime.strptime(first_constrain, "%H:%M").time() if first_constrain else None
+    constrain_end = datetime.strptime(second_constrain, "%H:%M").time() if second_constrain else None
+
+    valid_times = []
+
+    current_time = start_datetime
+    while current_time <= latest_start_time:
+        # Ensure class start time does NOT fall inside the constraint range
+        if not (constrain_start and constrain_end and constrain_start <= current_time.time() < constrain_end):
+            valid_times.append(current_time)
+        current_time += timedelta(minutes=30)  # Ensure step is in 30-minute intervals
+
+    if not valid_times:
+        raise ValueError(f"No valid start times available outside {first_constrain} - {second_constrain}!")
+
+    # Pick a valid start time at random
+    random_start = random.choice(valid_times)
+    random_end = random_start + timedelta(hours=duration)
+
+    return random_start.strftime("%H:%M:%S"), random_end.strftime("%H:%M:%S")
 
 # Initialize the Population
 def initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain):
@@ -44,39 +71,41 @@ def initialize_population(units, population_size, start_time, end_time, duration
             while not valid:
                 day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
                 start, end = generate_random_time(start_time, end_time, duration, first_constrain, second_constrain)
-                if start != datetime.strptime(first_constrain, "%H:%M").time():
+                if first_constrain and start != datetime.strptime(first_constrain, "%H:%M").time():
+                    valid = True
+                    timetable.append((unit, day, start, end))
+                elif not first_constrain or second_constrain:  # If no constraint, always valid
                     valid = True
                     timetable.append((unit, day, start, end))
         population.append(timetable)
     return population
 
-
 # Define the Fitness Function
-def fitness_function(timetable, first_constrain, second_constrain):
+def fitness_function(timetable, start_time, duration, first_constrain, second_constrain):
     score = 0
     daily_units = {}
 
-    # Convert constraints to time objects
-    constrain_start = datetime.strptime(first_constrain, "%H:%M").time()
-    constrain_end = datetime.strptime(second_constrain, "%H:%M").time()
+    # Convert constraints only if provided
+    constrain_start = datetime.strptime(first_constrain, "%H:%M").time() if first_constrain else None
+    constrain_end = datetime.strptime(second_constrain, "%H:%M").time() if second_constrain else None
 
     # Generate dynamic restricted start times
     constrain_times = []
-    start_time = datetime.strptime("08:00", "%H:%M")  # Earliest possible class start
+    if constrain_start and constrain_end:
+        class_start_time = datetime.strptime(start_time, "%H:%M")  # Earliest possible class start
+        while class_start_time.time() < constrain_end:  # Until second_constrain
+            class_end_time = (class_start_time + timedelta(hours=duration)).time()  # Assume class duration is 3 hours
+            if class_end_time > constrain_start:  # If the class overlaps the restricted range
+                constrain_times.append(class_start_time.strftime("%H:%M:%S"))
+            class_start_time += timedelta(minutes=30)  # Move in 30-minute intervals
 
-    while start_time.time() < constrain_end:  # Until second_constrain
-        end_time = (start_time + timedelta(hours=3)).time()  # Assume class duration is 3 hours
-        if end_time > constrain_start:  # If the class overlaps the restricted range
-            constrain_times.append(start_time.strftime("%H:%M:%S"))
-        start_time += timedelta(minutes=30)  # Move in 30-min intervals
-
-    for unit, day, start_time, end_time in timetable:
+    for unit, day, class_start_time, class_end_time in timetable:
         if day not in daily_units:
             daily_units[day] = []
         daily_units[day].append(unit)
 
         # Check if class starts at a restricted time
-        if start_time in constrain_times:
+        if constrain_times and class_start_time in constrain_times:
             score -= 10  # Apply penalty
 
     # Check for constraints and calculate the score
@@ -112,33 +141,6 @@ def crossover(parent1, parent2):
     offspring2 = parent2[:crossover_point] + parent1[crossover_point:]
     return offspring1, offspring2
 
-# Helper function
-def generate_random_time(start_time, end_time, duration, first_constrain, second_constrain):
-    start_datetime = datetime.strptime(start_time, "%H:%M")
-    end_datetime = datetime.strptime(end_time, "%H:%M")
-    latest_start_time = end_datetime - timedelta(hours=duration)
-
-    constrain_start = datetime.strptime(first_constrain, "%H:%M").time()
-    constrain_end = datetime.strptime(second_constrain, "%H:%M").time()
-
-    valid_times = []
-
-    current_time = start_datetime
-    while current_time <= latest_start_time:
-        # Ensure class start time does NOT fall inside the constraint range
-        if not (constrain_start <= current_time.time() < constrain_end):
-            valid_times.append(current_time)
-        current_time += timedelta(minutes=30)  # Ensure step is in 30-minute intervals
-
-    if not valid_times:
-        raise ValueError(f"No valid start times available outside {first_constrain} - {second_constrain}!")
-
-    # Pick a valid start time at random
-    random_start = random.choice(valid_times)
-    random_end = random_start + timedelta(hours=duration)
-
-    return random_start.strftime("%H:%M:%S"), random_end.strftime("%H:%M:%S")
-
 # mutation function
 def mutation(individual, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
     for i in range(len(individual)):
@@ -148,18 +150,19 @@ def mutation(individual, mutation_rate, start_time, end_time, duration, first_co
             individual[i] = (individual[i][0], day, start, end)
     return individual
 
-
 # Generate timetable function
 def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
     population = initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain)
+    
     for generation in range(generations):
-        fitness_values = [fitness_function(timetable, first_constrain, second_constrain) for timetable in population]
+        fitness_values = [fitness_function(timetable, start_time, duration, first_constrain, second_constrain) for timetable in population]
+        
         if sum(fitness_values) == 0:
             fitness_values = [1 for _ in fitness_values]
 
         try:
             population = selection(population, fitness_values)
-        except ValueError as e:
+        except ValueError:
             population = random.choices(population, k=len(population))
 
         next_generation = []
@@ -169,7 +172,8 @@ def generate_timetable(units, population_size, generations, mutation_rate, start
             offspring1, offspring2 = crossover(parent1, parent2)
             next_generation.append(mutation(offspring1, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain))
             next_generation.append(mutation(offspring2, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain))
+        
         population = next_generation
 
-    best_timetable = max(population, key=lambda timetable: fitness_function(timetable, first_constrain, second_constrain))
+    best_timetable = max(population, key=lambda timetable: fitness_function(timetable, start_time, duration, first_constrain, second_constrain))
     return best_timetable
