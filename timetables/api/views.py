@@ -53,10 +53,10 @@ class GenerateTimetableView(APIView):
             batch_id = request.data.get('batch_id')
             start_time = request.data.get('start_time')
             end_time = request.data.get('end_time')
-            duration = request.data.get('duration')
+            duration = int(request.data.get('duration'))
             first_constrain = request.data.get('first_constrain')
             second_constrain = request.data.get('second_constrain')
-            prompt = request.data.get('prompt', 'Just')
+            prompt = request.data.get('prompt')
 
             if not batch_id:
                 return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -80,7 +80,7 @@ class GenerateTimetableView(APIView):
                 for session in best_timetable
             ]
 
-            if prompt == 'Just':
+            if prompt == '':
                 for session in best_timetable: 
                     Timetable.objects.create( 
                         unit_name=session[0][0],  
