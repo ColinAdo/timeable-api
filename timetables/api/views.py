@@ -19,6 +19,7 @@ class TimetableView(APIView):
         timetables = Timetable.objects.filter(batch_id=batch_id)
         response_data = [
             {
+                'id': timetable.id,
                 'name': timetable.name,
                 'unit_name': timetable.unit_name,
                 'unit_code': timetable.unit_code,
