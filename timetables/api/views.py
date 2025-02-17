@@ -112,7 +112,7 @@ class GenerateTimetableView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
  
 # Send timetable email view
-class SendTimetableEmailView(APIView):
+class ExportToEmailView(APIView):
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
         email = request.data.get('email')
