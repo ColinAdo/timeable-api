@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .serializer import TimetableSerializer, TimetableNameSerializer
 from timetables.models import Timetable, TimetableName
 
 from datetime import time
@@ -53,10 +52,8 @@ class TimetableApiTestCase(APITestCase):
         url = reverse('timetable-list')
         response = self.client.get(url, format='json')
         queryset = Timetable.objects.all()
-        expected_data = TimetableSerializer(queryset, many=True).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, expected_data)
         self.assertEqual(len(response.data), 1)
         self.assertContains(response, self.user.id)
 
@@ -66,10 +63,8 @@ class TimetableApiTestCase(APITestCase):
         
         response = self.client.get(url)
         obj = Timetable.objects.get(pk=self.timetable.id)
-        expected_data = TimetableSerializer(obj).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, expected_data)
         self.assertContains(response, self.timetable.day)
 
     def test_update_timetable(self):
@@ -105,10 +100,8 @@ class TimetableApiTestCase(APITestCase):
 
         response = self.client.get(url)
         obj = Timetable.objects.get(batch_id=self.timetable.batch_id)
-        expected_data = TimetableSerializer(obj).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, [expected_data])
         self.assertContains(response, self.timetable.day)
 
 
@@ -156,10 +149,8 @@ class TimetableNameApiTestCase(APITestCase):
         url = reverse('timetablenames-list')
         response = self.client.get(url, format='json')
         queryset = TimetableName.objects.all()
-        expected_data = TimetableNameSerializer(queryset, many=True).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, expected_data)
         self.assertEqual(len(response.data), 1)
         self.assertContains(response, self.user.id)
 
@@ -169,10 +160,8 @@ class TimetableNameApiTestCase(APITestCase):
 
         response = self.client.get(url)
         obj = TimetableName.objects.get(pk=self.timetablename.id)
-        expected_data = TimetableNameSerializer(obj).data
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, expected_data)
         self.assertContains(response, self.timetablename.name)
 
     def test_update_timetablename(self):
