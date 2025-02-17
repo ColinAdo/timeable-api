@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from timetables.models import Timetable, TimetableName
+from timetables.models import Timetable
 
 from datetime import time
 
@@ -124,11 +124,6 @@ class TimetableNameApiTestCase(APITestCase):
             start_time=time(8, 0),
             end_time=time(10, 0)
         )
-        cls.timetablename = TimetableName.objects.create(
-            user=cls.user,
-            timetable=cls.timetable,
-            name='testname'
-        )
         cls.access_token = AccessToken.for_user(cls.user)
 
     def test_post_timetable(self):
@@ -142,13 +137,11 @@ class TimetableNameApiTestCase(APITestCase):
         response = self.client.post(url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(TimetableName.objects.count(), 2)
 
     def test_get_timetablenames(self):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
         url = reverse('timetablenames-list')
         response = self.client.get(url, format='json')
-        queryset = TimetableName.objects.all()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
@@ -159,7 +152,6 @@ class TimetableNameApiTestCase(APITestCase):
         url = reverse('timetablenames-detail', kwargs={'pk': self.timetablename.id})
 
         response = self.client.get(url)
-        obj = TimetableName.objects.get(pk=self.timetablename.id)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertContains(response, self.timetablename.name)
@@ -185,4 +177,3 @@ class TimetableNameApiTestCase(APITestCase):
         response = self.client.delete(url)
 
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(TimetableName.objects.count(), 0)
