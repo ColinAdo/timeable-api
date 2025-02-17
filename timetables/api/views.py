@@ -125,8 +125,8 @@ class ExportToEmailView(APIView):
         
         data = [
             {
-                'Unit Name': timetable.unit_name,
                 'Unit Code': timetable.unit_code,
+                'Unit Name': timetable.unit_name,
                 'Day': timetable.day,
                 'Start Time': timetable.start_time,
                 'End Time': timetable.end_time
