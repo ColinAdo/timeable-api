@@ -21,8 +21,8 @@ class TimetableView(APIView):
             {
                 'id': timetable.id,
                 'name': timetable.name,
-                'unit_name': timetable.unit_name,
                 'unit_code': timetable.unit_code,
+                'unit_name': timetable.unit_name,
                 'day': timetable.day,
                 'start_time': timetable.start_time,
                 'end_time': timetable.end_time
