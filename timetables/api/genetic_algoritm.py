@@ -14,7 +14,7 @@ def double_check_timetable(timetable, prompt):
             api_key=os.environ.get(settings.GROQ_API_KEY),
         )
         
-        constrains = f"{prompt}. Return the timetable data in a plain JSON format, like the following: [ {{ unit_name: 'value', unit_code: 'value'... }} ]. Only return the JSON data, without any additional text or quotes."
+        constrains = f"'{prompt}.' Return the timetable data in a plain JSON format, like the following: [ {{ unit_name: 'value', unit_code: 'value'... }} ]. Only return the JSON data, without any additional text or quotes."
         
         chat_completion = client.chat.completions.create(
             messages=[
@@ -81,6 +81,54 @@ def initialize_population(units, population_size, start_time, end_time, duration
     return population
 
 # Define the Fitness Function
+# def fitness_function(timetable, start_time, duration, first_constrain, second_constrain):
+    score = 0
+    daily_units = {}
+
+    # Convert constraints only if provided
+    constrain_start = datetime.strptime(first_constrain, "%H:%M").time() if first_constrain else None
+    constrain_end = datetime.strptime(second_constrain, "%H:%M").time() if second_constrain else None
+
+    # Generate dynamic restricted start times
+    constrain_times = []
+    if constrain_start and constrain_end:
+        class_start_time = datetime.strptime(start_time, "%H:%M")  # Earliest possible class start
+        while class_start_time.time() < constrain_end:  # Until second_constrain
+            class_end_time = (class_start_time + timedelta(hours=duration)).time()  # Assume class duration is 3 hours
+            if class_end_time > constrain_start:  # If the class overlaps the restricted range
+                constrain_times.append(class_start_time.strftime("%H:%M:%S"))
+            class_start_time += timedelta(minutes=30)  # Move in 30-minute intervals
+
+    for unit, day, class_start_time, class_end_time in timetable:
+        if day not in daily_units:
+            daily_units[day] = []
+        daily_units[day].append(unit)
+
+        # Check if class starts at a restricted time
+        if constrain_times and class_start_time in constrain_times:
+            score -= 10  # Apply penalty
+
+    # Check for constraints and calculate the score
+    for day, units in daily_units.items():
+        year_semester_count = {}
+        for unit in units:
+            year_semester = unit[2]  # Year and semester format like Y1S1, Y1S2
+            if year_semester not in year_semester_count:
+                year_semester_count[year_semester] = 0
+            year_semester_count[year_semester] += 1
+        
+        # Penalize if more than 2 units for the same academic year and semester in a day
+        for year_semester, count in year_semester_count.items():
+            if count > 2:
+                score -= 10
+        if all(count <= 2 for count in year_semester_count.values()):
+            score += 1
+    
+    if score == 0:
+        score = 1 
+
+    return score
+
 def fitness_function(timetable, start_time, duration, first_constrain, second_constrain):
     score = 0
     daily_units = {}
