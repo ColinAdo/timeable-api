@@ -2,25 +2,24 @@ import os
 import json
 import random
 
-from groq import Groq # type: ignore
+from groq import Groq  # type: ignore
 
 from django.conf import settings
 from datetime import datetime, timedelta
 
-# Double check timetable using groq api 
 def double_check_timetable(timetable, prompt):
     try:
         client = Groq(
             api_key=os.environ.get(settings.GROQ_API_KEY),
         )
         
-        constrains = f"'{prompt}.' Return the timetable data in a plain JSON format, like the following: [ {{ unit_name: 'value', unit_code: 'value'... }} ]. Only return the JSON data, without any additional text or quotes."
+        constraints = f"'{prompt}.' Return the timetable data in a plain JSON format, like the following: [ {{ unit_name: 'value', unit_code: 'value'... }} ]. Only return the JSON data, without any additional text or quotes."
         
         chat_completion = client.chat.completions.create(
             messages=[
                 {
                     "role": "user",
-                    "content": f"{timetable} {constrains}",
+                    "content": f"{timetable} {constraints}",
                 }
             ],
             model="llama-3.3-70b-versatile",
@@ -33,15 +32,15 @@ def double_check_timetable(timetable, prompt):
         print(f"Error in double_check_timetable: {e}")
         raise
 
-# Helper function
-def generate_random_time(start_time, end_time, duration, first_constrain, second_constrain):
-    start_datetime = datetime.strptime(start_time, "%H:%M")
-    end_datetime = datetime.strptime(end_time, "%H:%M")
-    latest_start_time = end_datetime - timedelta(hours=duration)
+def generate_random_time(start_time, end_time, duration, first_constrain=None, second_constrain=None):
+    start_datetime = datetime.strptime(start_time, "%H:%M" if len(start_time) == 5 else "%H:%M:%S")
 
     # Only parse constraints if they are provided
-    constrain_start = datetime.strptime(first_constrain, "%H:%M").time() if first_constrain else None
-    constrain_end = datetime.strptime(second_constrain, "%H:%M").time() if second_constrain else None
+    end_datetime = datetime.strptime(end_time, "%H:%M" if len(end_time) == 5 else "%H:%M:%S")
+    latest_start_time = end_datetime - timedelta(hours=duration)
+
+    constrain_start = datetime.strptime(first_constrain, "%H:%M" if first_constrain and len(first_constrain) == 5 else "%H:%M:%S").time() if first_constrain else None
+    constrain_end = datetime.strptime(second_constrain, "%H:%M" if second_constrain and len(second_constrain) == 5 else "%H:%M:%S").time() if second_constrain else None
 
     valid_times = []
 
@@ -61,56 +60,51 @@ def generate_random_time(start_time, end_time, duration, first_constrain, second
 
     return random_start.strftime("%H:%M:%S"), random_end.strftime("%H:%M:%S")
 
-# Initialize the Population
-def initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain):
+def initialize_population(units, population_size, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     population = []
     for _ in range(population_size):
         timetable = []
+        day_count = {day: {} for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
         for unit in units:
             valid = False
-            while not valid:
+            attempts = 0
+            while not valid and attempts < 100:  # Prevent infinite loop
                 day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
                 start, end = generate_random_time(start_time, end_time, duration, first_constrain, second_constrain)
-                if first_constrain and start != datetime.strptime(first_constrain, "%H:%M").time():
+                year_semester = unit[2]
+
+                if day not in day_count or year_semester not in day_count[day]:
+                    day_count[day][year_semester] = 0
+
+                if day_count[day][year_semester] < 2:
                     valid = True
                     timetable.append((unit, day, start, end))
-                elif not first_constrain or second_constrain:  # If no constraint, always valid
-                    valid = True
-                    timetable.append((unit, day, start, end))
+                    day_count[day][year_semester] += 1
+
+                attempts += 1
+
+            if not valid:  # Force addition if attempts threshold is reached
+                day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+                start, end = generate_random_time(start_time, end_time, duration, first_constrain, second_constrain)
+                timetable.append((unit, day, start, end))
+
         population.append(timetable)
     return population
 
-# Define the Fitness Function
-def fitness_function(timetable, start_time, duration, first_constrain, second_constrain):
-    score = 0
+
+def fitness_function(timetable):
+    score = 1  # Start with 1 to avoid zero
+
     daily_units = {}
-
-    # Convert constraints only if provided
-    constrain_start = datetime.strptime(first_constrain, "%H:%M").time() if first_constrain else None
-    constrain_end = datetime.strptime(second_constrain, "%H:%M").time() if second_constrain else None
-
-    # Generate dynamic restricted start times
-    constrain_times = []
-    if constrain_start and constrain_end:
-        class_start_time = datetime.strptime(start_time, "%H:%M")  # Earliest possible class start
-        while class_start_time.time() < constrain_end:  # Until second_constrain
-            class_end_time = (class_start_time + timedelta(hours=duration)).time()  # Assume class duration is 3 hours
-            if class_end_time > constrain_start:  # If the class overlaps the restricted range
-                constrain_times.append(class_start_time.strftime("%H:%M:%S"))
-            class_start_time += timedelta(minutes=30)  # Move in 30-minute intervals
 
     for unit, day, class_start_time, class_end_time in timetable:
         if day not in daily_units:
             daily_units[day] = []
         daily_units[day].append(unit)
 
-        # Check if class starts at a restricted time
-        if constrain_times and class_start_time in constrain_times:
-            score -= 10  # Apply penalty
-
-    # Check for constraints and calculate the score
     for day, units in daily_units.items():
         year_semester_count = {}
+
         for unit in units:
             year_semester = unit[2]  # Year and semester format like Y1S1, Y1S2
             if year_semester not in year_semester_count:
@@ -120,19 +114,20 @@ def fitness_function(timetable, start_time, duration, first_constrain, second_co
         # Penalize if more than 2 units for the same academic year and semester in a day
         for year_semester, count in year_semester_count.items():
             if count > 2:
-                score -= 10
-        if all(count <= 2 for count in year_semester_count.values()):
-            score += 1
-    
-    if score == 0:
-        score = 1 
+                score -= 10 * (count - 2)  # Heavy penalty for each extra unit beyond 2
+            elif count == 2:
+                score += 5  # Reward valid timetables
 
-    return score
+    return max(score, 1)  # Ensure score is never zero
 
-# Selection
+
+
 def selection(population, fitness_values):
-    selected = random.choices(population, weights=fitness_values, k=len(population))
-    return selected
+    if sum(fitness_values) == 0:  
+        fitness_values = [1] * len(fitness_values)  # Assign default weights
+
+    return random.choices(population, weights=fitness_values, k=len(population))
+
 
 # Crossover
 def crossover(parent1, parent2):
@@ -142,38 +137,54 @@ def crossover(parent1, parent2):
     return offspring1, offspring2
 
 # mutation function
-def mutation(individual, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
+def mutation(individual, mutation_rate, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     for i in range(len(individual)):
         if random.random() < mutation_rate:
-            day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-            start, end = generate_random_time(start_time, end_time, duration, first_constrain, second_constrain)
-            individual[i] = (individual[i][0], day, start, end)
+            day_count = {day: {} for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
+            for unit, day, start_time, end_time in individual:
+                year_semester = unit[2]
+                if day not in day_count or year_semester not in day_count[day]:
+                    day_count[day][year_semester] = 0
+                day_count[day][year_semester] += 1
+
+            retries = 10
+            valid = False
+            while not valid and retries > 0:
+                day = random.choice(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+                start, end = generate_random_time(start_time, end_time, duration, first_constrain, second_constrain)
+                year_semester = individual[i][0][2]
+
+                if day not in day_count or year_semester not in day_count[day]:
+                    day_count[day][year_semester] = 0
+
+                if day_count[day][year_semester] < 2:
+                    individual[i] = (individual[i][0], day, start, end)
+                    valid = True
+                    day_count[day][year_semester] += 1
+
+                retries -= 1
     return individual
 
-# Generate timetable function
-def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain):
+def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     population = initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain)
     
     for generation in range(generations):
-        fitness_values = [fitness_function(timetable, start_time, duration, first_constrain, second_constrain) for timetable in population]
+        fitness_values = [fitness_function(timetable) for timetable in population]
         
         if sum(fitness_values) == 0:
             fitness_values = [1 for _ in fitness_values]
 
-        try:
-            population = selection(population, fitness_values)
-        except ValueError:
-            population = random.choices(population, k=len(population))
-
+        selected = selection(population, fitness_values)
+        
         next_generation = []
-        for i in range(0, len(population), 2):
-            parent1 = population[i]
-            parent2 = population[i + 1] if i + 1 < len(population) else population[0]
+        for i in range(0, len(selected), 2):
+            parent1 = selected[i]
+            parent2 = selected[i + 1] if i + 1 < len(selected) else selected[0]
             offspring1, offspring2 = crossover(parent1, parent2)
             next_generation.append(mutation(offspring1, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain))
             next_generation.append(mutation(offspring2, mutation_rate, start_time, end_time, duration, first_constrain, second_constrain))
         
         population = next_generation
 
-    best_timetable = max(population, key=lambda timetable: fitness_function(timetable, start_time, duration, first_constrain, second_constrain))
+    best_timetable = max(population, key=lambda timetable: fitness_function(timetable))
     return best_timetable
