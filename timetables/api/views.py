@@ -13,6 +13,18 @@ from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable, double_check_timetable
 
+class TimetableNameView(APIView):
+    def get(self, request, format=None):
+        timetables = Timetable.objects.values('batch_id').distinct()
+        
+        response_data = [
+            {
+                'batch_id': timetable['batch_id']
+            }
+            for timetable in timetables
+        ]
+        return Response(response_data, status=status.HTTP_200_OK)
+
 # Get timetable
 class TimetableView(APIView):
     def get(self, request, batch_id, format=None):
