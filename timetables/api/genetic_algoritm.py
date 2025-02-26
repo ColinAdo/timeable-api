@@ -33,6 +33,7 @@ def double_check_timetable(timetable, prompt):
         print(f"Error in double_check_timetable: {e}")
         raise
 
+# Generate random time helper function
 def generate_random_time(start_time, end_time, duration, first_constrain=None, second_constrain=None):
     start_datetime = datetime.strptime(start_time, "%H:%M" if len(start_time) == 5 else "%H:%M:%S")
 
