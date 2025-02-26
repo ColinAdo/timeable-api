@@ -7,6 +7,7 @@ from groq import Groq  # type: ignore
 from django.conf import settings
 from datetime import datetime, timedelta
 
+# Groq ai function
 def double_check_timetable(timetable, prompt):
     try:
         client = Groq(
