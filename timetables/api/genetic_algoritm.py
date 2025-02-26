@@ -62,6 +62,7 @@ def generate_random_time(start_time, end_time, duration, first_constrain=None, s
 
     return random_start.strftime("%H:%M:%S"), random_end.strftime("%H:%M:%S")
 
+# Initialize population
 def initialize_population(units, population_size, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     population = []
     for _ in range(population_size):
