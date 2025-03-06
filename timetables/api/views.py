@@ -14,6 +14,7 @@ from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable, double_check_timetable
 
+# Generated timetable list view
 class TimetableNameView(APIView):
     def get(self, request, format=None):
         timetables = (
