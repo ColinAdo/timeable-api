@@ -19,12 +19,15 @@ class TimetableNameView(APIView):
     def get(self, request, format=None):
         timetables = (
             Timetable.objects
-            .values('batch_id') 
+            .values('batch_id', 'name') 
             .annotate(latest_created_at=Max('created_at'))  
             .order_by('-latest_created_at') 
         )
 
-        response_data = [{'batch_id': timetable['batch_id']} for timetable in timetables]
+        response_data = [{
+            'batch_id': timetable['batch_id'],
+            'name': timetable['name']
+            } for timetable in timetables]
 
         return Response(response_data, status=status.HTTP_200_OK)
 
