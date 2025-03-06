@@ -3,6 +3,7 @@ import pandas as pd
 
 from django.http import HttpResponse
 from django.core.mail import EmailMessage
+from django.db.models import Max
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,14 +16,15 @@ from .genetic_algoritm import generate_timetable, double_check_timetable
 
 class TimetableNameView(APIView):
     def get(self, request, format=None):
-        timetables = Timetable.objects.values('batch_id').distinct()
-        
-        response_data = [
-            {
-                'batch_id': timetable['batch_id']
-            }
-            for timetable in timetables
-        ]
+        timetables = (
+            Timetable.objects
+            .values('batch_id') 
+            .annotate(latest_created_at=Max('created_at'))  
+            .order_by('-latest_created_at') 
+        )
+
+        response_data = [{'batch_id': timetable['batch_id']} for timetable in timetables]
+
         return Response(response_data, status=status.HTTP_200_OK)
 
 # Get timetable
