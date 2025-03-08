@@ -121,23 +121,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Rest framework settings
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'auths.authentication.CustomJWTAuthentication',
-#     ],
-
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated'
-#     ]
-# }
-
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'auths.authentication.CustomJWTAuthentication',
+    ],
 
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Allow all requests
+        'rest_framework.permissions.IsAuthenticated'
     ]
 }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',  # Allow all requests
+#     ]
+# }
 
 
 # Djoser settings
