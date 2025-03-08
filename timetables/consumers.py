@@ -51,6 +51,17 @@ class TimetableConsumer(AsyncWebsocketConsumer):
                 }
             )
             await self.save_timetable(name, batch_id)
+
+        elif operation == 'delete_timetable':
+            batch_id = data['sendData']['batch_id']
+            await self.channel_layer.group_send(
+                self.username,
+                {
+                    'type': 'delete_timetable_data',
+                    'batch_id': batch_id,
+                }
+            )
+            await self.delete_timetable(batch_id)
         
        
     # Send the created book to WebSocket
@@ -61,13 +72,27 @@ class TimetableConsumer(AsyncWebsocketConsumer):
             'name': name,
         }))
 
+    # Send the created book to WebSocket
+    async def delete_timetable_data(self, event):
+        batch_id = event['batch_id']
+
+        await self.send(text_data=json.dumps({
+            'batch_id': batch_id,
+        }))
+
 
     @sync_to_async
     def save_timetable(self, name, batch_id):
-        # user = self.scope.get('user')
         timetables = Timetable.objects.filter(batch_id=batch_id)
         for timetable in timetables:
             timetable.name = name
             timetable.save()
+
+    @sync_to_async
+    def delete_timetable(self, batch_id):
+        # user = self.scope.get('user')
+        timetables = Timetable.objects.filter(batch_id=batch_id)
+        for timetable in timetables:
+            timetable.delete()
 
     
