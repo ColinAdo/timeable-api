@@ -38,7 +38,7 @@ class TimetableConsumer(AsyncWebsocketConsumer):
         operation = data['event']
         
 
-        # Send the message to the group if create_account oppereation
+        # Send the message to the group if operation is rename_timetable
         if operation == 'rename_timetable':
             name = data['sendData']['name']
             batch_id = data['sendData']['batch_id']
