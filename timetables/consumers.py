@@ -72,6 +72,27 @@ class TimetableConsumer(AsyncWebsocketConsumer):
                 }
             )
             await self.delete_row(rowId)
+
+        elif operation == 'edit_row':
+            rowId = data['sendData']['rowId']
+            day = data['sendData']['dataSet']['day']
+            unit_code = data['sendData']['dataSet']['unit_code']
+            unit_name = data['sendData']['dataSet']['unit_name']
+            start_time = data['sendData']['dataSet']['start_time']
+            end_time = data['sendData']['dataSet']['end_time']
+            await self.channel_layer.group_send(
+                self.username,
+                {
+                    'type': 'edit_row_data',
+                    'day': day,
+                    'rowId': rowId,
+                    'end_time': end_time,
+                    'unit_code': unit_code,
+                    'unit_name': unit_name,
+                    'start_time': start_time,
+                }
+            )
+            await self.edit_row(rowId, day, end_time, unit_code, unit_name, start_time)
         
        
     # Send the created book to WebSocket
@@ -89,8 +110,17 @@ class TimetableConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'batch_id': batch_id,
         }))
+
     # Send the deleted row to WebSocket
     async def delete_row_data(self, event):
+        rowId = event['rowId']
+
+        await self.send(text_data=json.dumps({
+            'rowId': rowId,
+        }))
+
+    # Send the edited row to WebSocket
+    async def edit_row_data(self, event):
         rowId = event['rowId']
 
         await self.send(text_data=json.dumps({
@@ -107,15 +137,24 @@ class TimetableConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def delete_timetable(self, batch_id):
-        # user = self.scope.get('user')
         timetables = Timetable.objects.filter(batch_id=batch_id)
         for timetable in timetables:
             timetable.delete()
 
     @sync_to_async
     def delete_row(self, rowId):
-        # user = self.scope.get('user')
         timetable = Timetable.objects.get(id=rowId)
         timetable.delete()
+
+    @sync_to_async
+    def edit_row(self, rowId, day, end_time, unit_code, unit_name, start_time):
+        # user = self.scope.get('user')
+        timetable = Timetable.objects.get(id=rowId)
+        timetable.day = day
+        timetable.end_time = end_time
+        timetable.unit_code = unit_code
+        timetable.unit_name = unit_name
+        timetable.start_time = start_time
+        timetable.save()
 
     
