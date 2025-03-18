@@ -14,6 +14,21 @@ from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable, double_check_timetable
 
+# # Get timetable data
+class TimetableDataView(APIView):
+    def get(self, request, rowId, format=None):
+        timetable = Timetable.objects.get(id=rowId)
+        response_data = {
+            'id': timetable.id,
+            'name': timetable.name,
+            'unit_code': timetable.unit_code,
+            'unit_name': timetable.unit_name,
+            'day': timetable.day,
+            'start_time': timetable.start_time,
+            'end_time': timetable.end_time
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
 # Generated timetable list view
 class TimetableNameView(APIView):
     def get(self, request, format=None):
