@@ -30,7 +30,7 @@ class TimetableDataView(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-# Generated timetable list view
+# Generated timetable names list view
 class TimetableNameView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, format=None):
