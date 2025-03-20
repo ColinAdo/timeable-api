@@ -14,18 +14,18 @@ class UnitAdmin(admin.ModelAdmin):
 # Timetable admin
 class TimetableAdmin(admin.ModelAdmin):
     list_display = [
-        # 'user',
+        'user',
         'name',
         'unit_code',
         'unit_name',
         'day',
         'start_time',
         'end_time',
-        # 'lecturer',
-        # 'campus',
-        # 'mode_of_study',
-        # 'lecture_room',
-        # 'group',
+        'lecturer',
+        'campus',
+        'mode_of_study',
+        'lecture_room',
+        'group',
     ]
 
 # Subscription admin
