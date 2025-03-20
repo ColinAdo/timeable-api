@@ -72,6 +72,17 @@ class TimetableConsumer(AsyncWebsocketConsumer):
                 }
             )
             await self.delete_row(rowId)
+        
+        elif operation == 'delete_selected_rows':
+            ids = data['sendData']['ids']
+            await self.channel_layer.group_send(
+                self.username,
+                {
+                    'type': 'delete_selected_row_data',
+                    'ids': ids,
+                }
+            )
+            await self.delete_selected_row(ids)
 
         elif operation == 'edit_row':
             rowId = data['sendData']['rowId']
@@ -119,6 +130,14 @@ class TimetableConsumer(AsyncWebsocketConsumer):
             'rowId': rowId,
         }))
 
+    # Send the deleted selected row to WebSocket
+    async def delete_selected_row_data(self, event):
+        ids = event['ids']
+
+        await self.send(text_data=json.dumps({
+            'ids': ids,
+        }))
+
     # Send the edited row to WebSocket
     async def edit_row_data(self, event):
         rowId = event['rowId']
@@ -145,6 +164,11 @@ class TimetableConsumer(AsyncWebsocketConsumer):
     def delete_row(self, rowId):
         timetable = Timetable.objects.get(id=rowId)
         timetable.delete()
+
+    @sync_to_async
+    def delete_selected_row(self, ids):
+        Timetable.objects.filter(id__in=ids).delete()
+        print("Deleted", ids)
 
     @sync_to_async
     def edit_row(self, rowId, day, end_time, unit_code, unit_name, start_time):
