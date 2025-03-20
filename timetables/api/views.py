@@ -16,6 +16,7 @@ from .genetic_algoritm import generate_timetable, double_check_timetable
 
 # # Get timetable data
 class TimetableDataView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, rowId, format=None):
         timetable = Timetable.objects.get(id=rowId)
         response_data = {
@@ -31,6 +32,7 @@ class TimetableDataView(APIView):
 
 # Generated timetable list view
 class TimetableNameView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, format=None):
         timetables = (
             Timetable.objects
@@ -48,6 +50,7 @@ class TimetableNameView(APIView):
 
 # Get timetable
 class TimetableView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, batch_id, format=None):
         timetables = Timetable.objects.filter(batch_id=batch_id)
         response_data = [
@@ -66,6 +69,7 @@ class TimetableView(APIView):
 
 # Upload excel file view
 class UploadUnitsView(APIView): 
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def post(self, request, format=None): 
         batch_id = request.data.get('batch_id')
         if not batch_id:
@@ -82,6 +86,7 @@ class UploadUnitsView(APIView):
     
 # Generate timetable view
 class GenerateTimetableView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def post(self, request, format=None):
         try:
             batch_id = request.data.get('batch_id')
@@ -146,6 +151,7 @@ class GenerateTimetableView(APIView):
  
 # Send timetable email view
 class ExportToEmailView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def post(self, request, format=None):
         batch_id = request.data.get('batch_id')
         email = request.data.get('email')
