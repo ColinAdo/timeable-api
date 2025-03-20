@@ -52,7 +52,7 @@ class TimetableNameView(APIView):
 class TimetableView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, batch_id, format=None):
-        timetables = Timetable.objects.filter(batch_id=batch_id)
+        timetables = Timetable.objects.filter(batch_id=batch_id, user=request.user)
         response_data = [
             {
                 'id': timetable.id,
@@ -122,6 +122,7 @@ class GenerateTimetableView(APIView):
             if prompt == '':
                 for session in best_timetable: 
                     Timetable.objects.create( 
+                        user=request.user,
                         unit_name=session[0][0],  
                         unit_code=session[0][1],  
                         day=session[1],              
@@ -135,6 +136,7 @@ class GenerateTimetableView(APIView):
                 corrected_timetable = double_check_timetable(response_data, prompt)
                 for session in corrected_timetable: 
                     Timetable.objects.create( 
+                        user=request.user,
                         unit_name=session["unit_name"],  
                         unit_code=session["unit_code"],  
                         day=session["day"],              
@@ -158,7 +160,7 @@ class ExportToEmailView(APIView):
         if not batch_id or not email:
             return Response({"error": "batch_id and email are required"}, status=status.HTTP_400_BAD_REQUEST)
         
-        timetables = Timetable.objects.filter(batch_id=batch_id)
+        timetables = Timetable.objects.filter(batch_id=batch_id, user=request.user)
         if not timetables.exists():
             return Response({"error": "No timetable found for the given batch_id"}, status=status.HTTP_404_NOT_FOUND)
         
