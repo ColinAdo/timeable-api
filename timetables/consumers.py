@@ -91,6 +91,11 @@ class TimetableConsumer(AsyncWebsocketConsumer):
             unit_name = data['sendData']['dataSet']['unit_name']
             start_time = data['sendData']['dataSet']['start_time']
             end_time = data['sendData']['dataSet']['end_time']
+            lecturer = data['sendData']['dataSet']['lecturer']
+            campus = data['sendData']['dataSet']['campus']
+            mode = data['sendData']['dataSet']['mode']
+            room = data['sendData']['dataSet']['room']
+            group = data['sendData']['dataSet']['group']
             await self.channel_layer.group_send(
                 self.username,
                 {
@@ -101,9 +106,14 @@ class TimetableConsumer(AsyncWebsocketConsumer):
                     'unit_code': unit_code,
                     'unit_name': unit_name,
                     'start_time': start_time,
+                    'lecturer': lecturer,
+                    'campus': campus,
+                    'mode': mode,
+                    'room': room,
+                    'group': group,
                 }
             )
-            await self.edit_row(rowId, day, end_time, unit_code, unit_name, start_time)
+            await self.edit_row(rowId, day, end_time, unit_code, unit_name, start_time, lecturer, campus, mode, room, group)
         
        
     # Send the created book to WebSocket
@@ -171,7 +181,7 @@ class TimetableConsumer(AsyncWebsocketConsumer):
         print("Deleted", ids)
 
     @sync_to_async
-    def edit_row(self, rowId, day, end_time, unit_code, unit_name, start_time):
+    def edit_row(self, rowId, day, end_time, unit_code, unit_name, start_time, lecturer, campus, mode, room, group):
         # user = self.scope.get('user')
         timetable = Timetable.objects.get(id=rowId)
         timetable.day = day
@@ -179,6 +189,11 @@ class TimetableConsumer(AsyncWebsocketConsumer):
         timetable.unit_code = unit_code
         timetable.unit_name = unit_name
         timetable.start_time = start_time
+        timetable.lecturer = lecturer
+        timetable.campus = campus
+        timetable.mode_of_study = mode
+        timetable.lecture_room = room
+        timetable.group = group
         timetable.save()
 
     
