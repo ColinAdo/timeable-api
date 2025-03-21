@@ -22,7 +22,7 @@ class Timetable(models.Model):
     campus = models.CharField(max_length=200, null=True, blank=True)
     mode_of_study = models.CharField(max_length=200, null=True, blank=True)
     lecture_room = models.CharField(max_length=200, null=True, blank=True)
-    group = models.IntegerField(default=0, null=True, blank=True)
+    group = models.CharField(max_length=200, default=0, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     class Meta:
