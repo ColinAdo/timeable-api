@@ -26,7 +26,12 @@ class TimetableDataView(APIView):
             'unit_name': timetable.unit_name,
             'day': timetable.day,
             'start_time': timetable.start_time,
-            'end_time': timetable.end_time
+            'end_time': timetable.end_time,
+            'lecturer': timetable.lecturer,
+            'campus': timetable.campus,
+            'mode_of_study': timetable.mode_of_study,
+            'lecture_room': timetable.lecture_room,
+            'group': timetable.group,
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
