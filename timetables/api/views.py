@@ -1,9 +1,11 @@
 import os
 import pandas as pd
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.core.mail import EmailMessage
 from django.db.models import Max
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -13,6 +15,46 @@ from core import settings
 from .permissions import IsOwnerOrReadOnly
 from timetables.models import Timetable, Unit
 from .genetic_algoritm import generate_timetable, double_check_timetable
+from django_daraja.mpesa.core import MpesaClient  # type: ignore
+
+
+class SubscribeView(APIView):
+    def post(self, request, format=None):
+        number = request.data.get('phone_number')
+        amnt = request.data.get('amount')
+
+        cl = MpesaClient()
+        phone_number = number
+        amount = int(amnt)  # Ensure the amount is an integer
+        account_reference = 'reference'
+        transaction_desc = 'Description'
+        
+        # Use your ngrok URL instead of the Daraja default
+        callback_url = "https://7850-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
+
+        response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+        return HttpResponse(response)
+
+@csrf_exempt
+def mpesa_callback(request):
+    if request.method == "POST":
+        raw_data = request.body.decode('utf-8')  # Decode raw request body
+        print(f"⚡ Raw Data Length: {len(raw_data)}")  # Check if data exists
+        print(f"⚡ Raw JSON Received: {repr(raw_data)}")  # Print raw data
+
+        if not raw_data.strip():  # If empty, print error
+            print("⚠️ No data received in request body!")
+            return JsonResponse({"error": "Empty request body"}, status=400)
+
+        try:
+            data = json.loads(raw_data)  # Try to parse JSON
+            print("✅ Mpesa Callback Response:", data)  # Print parsed JSON
+
+            return JsonResponse({"message": "Callback received successfully"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON received"}, status=400)
+    else:
+        return JsonResponse({"error": "Only POST requests are allowed"}, status=405)
 
 # # Get timetable data
 class TimetableDataView(APIView):
