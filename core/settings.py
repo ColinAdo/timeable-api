@@ -23,7 +23,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,7850-102-0-4-206.ngrok-free.app').split(',')
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # external libraries
     'corsheaders',
     'social_django',
+    'django_daraja',
     'rest_framework',
     'djoser',
     'django_coverage_plugin',
@@ -121,23 +122,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Rest framework settings
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'auths.authentication.CustomJWTAuthentication',
-    ],
-
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
-    ]
-}
-
 # REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'auths.authentication.CustomJWTAuthentication',
+#     ],
 
 #     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.AllowAny',  # Allow all requests
+#         'rest_framework.permissions.IsAuthenticated'
 #     ]
 # }
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',  # Allow all requests
+    ]
+}
 
 
 # Djoser settings
@@ -214,6 +215,12 @@ SOCIAL_AUTH_GITHUB_EXTRA_DATA = [
     ('name', 'name')
 ]
 
+# MPESA env
+MPESA_ENVIRONMENT = os.getenv('MPESA_ENVIRONMENT')
+MPESA_CONSUMER_KEY = os.getenv('MPESA_CONSUMER_KEY')
+MPESA_CONSUMER_SECRET = os.getenv('MPESA_CONSUMER_SECRET')
+MPESA_PASSKEY = os.getenv('MPESA_PASSKEY')
+MPESA_EXPRESS_SHORTCODE = os.getenv('MPESA_EXPRESS_SHORTCODE')
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
