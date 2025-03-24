@@ -7,9 +7,13 @@ from .views import (
     GenerateTimetableView, 
     TimetableDataView,
     TimetableNameView,
+    SubscribeView,
+    mpesa_callback
 )
 
 urlpatterns = [
+    path('mpesa/callback/', mpesa_callback, name='mpesa_callback'),
+    path('subscribe/', SubscribeView.as_view(), name='subscribe'),
     path('upload/units/', UploadUnitsView.as_view(), name='upload_units'),
     path('timetable/names/', TimetableNameView.as_view(), name='timetable_name'),
     path('generate/timetable/', GenerateTimetableView.as_view(), name='generate_timetable'),
