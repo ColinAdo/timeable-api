@@ -31,7 +31,7 @@ class SubscribeView(APIView):
         transaction_desc = 'Description'
         
         # Use your ngrok URL instead of the Daraja default
-        callback_url = "https://1096-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
+        callback_url = "https://dd68-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
 
         response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
         if hasattr(response, 'json'):
