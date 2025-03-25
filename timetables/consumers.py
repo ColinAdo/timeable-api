@@ -156,6 +156,16 @@ class TimetableConsumer(AsyncWebsocketConsumer):
             'rowId': rowId,
         }))
 
+    async def subscription_created(self, event):
+        await self.send(text_data=json.dumps({
+            "event": "subscription_created",
+            "message": event["message"],
+            "tier": event["tier"],
+            "amount": event["amount"],
+            "status": event["status"],
+        }))
+
+
 
     @sync_to_async
     def save_timetable(self, name, batch_id):
