@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Timetable, Unit, Subscription
+from .models import Timetable, Unit, Subscription, PendingTransaction
 
 # Unit admin
 class UnitAdmin(admin.ModelAdmin):
@@ -37,6 +37,15 @@ class SubscriptionAdmin(admin.ModelAdmin):
         'amount',
     ]
 
+class PendingSubscriptionAdmin(admin.ModelAdmin):
+    list_display = [
+        'user',
+        'phone_number',
+        'transaction_id',
+        'amount',
+    ]
+
 admin.site.register(Timetable, TimetableAdmin)
 admin.site.register(Unit, UnitAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
+admin.site.register(PendingTransaction, PendingSubscriptionAdmin)
