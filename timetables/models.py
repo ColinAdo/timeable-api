@@ -35,9 +35,17 @@ class Timetable(models.Model):
 class Subscription(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     amount = models.DecimalField(default=0.0, max_digits=99999999, decimal_places=2)
+    transaction_id = models.CharField(max_length=20, null=True, blank=True)
     tier = models.CharField(max_length=10)
     status = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f'{self.user.username} Subscriptions'
+    
+class PendingTransaction(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
