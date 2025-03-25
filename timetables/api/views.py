@@ -13,13 +13,14 @@ from rest_framework import status, permissions
 
 from core import settings
 from .permissions import IsOwnerOrReadOnly
-from timetables.models import Timetable, Unit
+from timetables.models import Timetable, Unit, PendingTransaction, Subscription
 from .genetic_algoritm import generate_timetable, double_check_timetable
 from django_daraja.mpesa.core import MpesaClient  # type: ignore
 
 
 class SubscribeView(APIView):
     def post(self, request, format=None):
+        user = request.user
         number = request.data.get('phone_number')
         amnt = request.data.get('amount')
 
@@ -30,27 +31,71 @@ class SubscribeView(APIView):
         transaction_desc = 'Description'
         
         # Use your ngrok URL instead of the Daraja default
-        callback_url = "https://7850-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
+        callback_url = "https://1096-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
 
         response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
+        if hasattr(response, 'json'):
+            response_data = response.json()  
+        else:
+            response_data = dict(response)
+
+        merchant_request_id = response_data.get("MerchantRequestID")
+
+        if not merchant_request_id:
+            return Response({"error": "Failed to get transaction ID"}, status=400)
+
+        # Store transaction reference using MerchantRequestID
+        PendingTransaction.objects.create(
+            user=user, phone_number=phone_number, amount=amount, transaction_id=merchant_request_id
+        )
+
         return HttpResponse(response)
 
 @csrf_exempt
 def mpesa_callback(request):
     if request.method == "POST":
-        raw_data = request.body.decode('utf-8')  # Decode raw request body
-        print(f"⚡ Raw Data Length: {len(raw_data)}")  # Check if data exists
-        print(f"⚡ Raw JSON Received: {repr(raw_data)}")  # Print raw data
+        raw_data = request.body.decode('utf-8')
+        print(f"⚡ Raw Data Length: {len(raw_data)}")
+        print(f"⚡ Raw JSON Received: {repr(raw_data)}")
 
-        if not raw_data.strip():  # If empty, print error
+        if not raw_data.strip():
             print("⚠️ No data received in request body!")
             return JsonResponse({"error": "Empty request body"}, status=400)
 
         try:
-            data = json.loads(raw_data)  # Try to parse JSON
-            print("✅ Mpesa Callback Response:", data)  # Print parsed JSON
+            data = json.loads(raw_data)
+            print("✅ Mpesa Callback Response:", data)
 
-            return JsonResponse({"message": "Callback received successfully"}, status=200)
+            # Extract correct transaction ID
+            transaction_id = data.get("Body", {}).get("stkCallback", {}).get("MerchantRequestID", None)
+            result_code = data.get("Body", {}).get("stkCallback", {}).get("ResultCode", None)
+
+            print(f"⚡ Searching for transaction ID: {transaction_id}")
+
+            if transaction_id is None:
+                return JsonResponse({"error": "Transaction ID missing"}, status=400)
+
+            # Check if transaction exists
+            pending_transaction = PendingTransaction.objects.filter(transaction_id=transaction_id).first()
+            if not pending_transaction:
+                print(f"🚨 No pending transaction found for ID: {transaction_id}")
+                return JsonResponse({"error": "Transaction not found"}, status=404)
+
+            # If payment was successful, save subscription
+            if result_code == 0:
+                Subscription.objects.create(
+                    user=pending_transaction.user,
+                    amount=pending_transaction.amount,
+                    tier="Premium",
+                    status="paid",
+                )
+                pending_transaction.delete()
+                print(f"✅ Subscription created for user: {pending_transaction.user}")
+                return JsonResponse({"message": "Subscription successfully created"}, status=200)
+
+            print("❌ Payment failed")
+            return JsonResponse({"error": "Payment failed"}, status=400)
+
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON received"}, status=400)
     else:
