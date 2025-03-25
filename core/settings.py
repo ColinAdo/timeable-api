@@ -23,7 +23,7 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,7850-102-0-4-206.ngrok-free.app').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1,localhost,dd68-102-0-4-206.ngrok-free.app').split(',')
 
 
 # Application definition
@@ -122,23 +122,23 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Rest framework settings
-# REST_FRAMEWORK = {
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'auths.authentication.CustomJWTAuthentication',
-#     ],
-
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated'
-#     ]
-# }
-
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'auths.authentication.CustomJWTAuthentication',
+    ],
 
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Allow all requests
+        'rest_framework.permissions.IsAuthenticated'
     ]
 }
+
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': [],  # No authentication required
+
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.AllowAny',  # Allow all requests
+#     ]
+# }
 
 
 # Djoser settings
