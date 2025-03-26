@@ -17,6 +17,29 @@ from timetables.models import Timetable, Unit, PendingTransaction, Subscription
 from .genetic_algoritm import generate_timetable, double_check_timetable
 from django_daraja.mpesa.core import MpesaClient  # type: ignore
 
+class SubscriptionView(APIView):
+    def get(self, request, format=None):
+        subscription = Subscription.objects.get(user=request.user)
+
+        response_data = {
+            'status': subscription.status,
+            'tier': subscription.tier,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
+class UnitsView(APIView):
+    def get(self, request, format=None):
+        units = Unit.objects.filter(user=request.user)
+
+        # Get unique batch IDs and count them (excluding None values)
+        unique_batch_ids = units.exclude(batch_id=None).values_list('batch_id', flat=True).distinct()
+        batch_count = len(unique_batch_ids)
+
+        response_data = {
+            'batch_count': batch_count,
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+
 
 class SubscribeView(APIView):
     def post(self, request, format=None):
@@ -168,6 +191,7 @@ class TimetableView(APIView):
 class UploadUnitsView(APIView): 
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def post(self, request, format=None): 
+        user = request.user
         batch_id = request.data.get('batch_id')
         if not batch_id:
             return Response({"error": "batch_id is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -176,7 +200,7 @@ class UploadUnitsView(APIView):
         data = pd.read_excel(file) 
         units = [] 
         for _, row in data.iterrows(): 
-            unit = Unit(unit_name=row['Unit Name'], unit_code=row['Unit Code'], year=row['Year'], batch_id=batch_id) 
+            unit = Unit(user=user, unit_name=row['Unit Name'], unit_code=row['Unit Code'], year=row['Year'], batch_id=batch_id) 
             units.append(unit) 
         Unit.objects.bulk_create(units) 
         return Response(status=status.HTTP_201_CREATED)
