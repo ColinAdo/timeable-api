@@ -3,6 +3,7 @@ from django.conf import settings
 
 # Unit model
 class Unit(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
     batch_id = models.CharField(max_length=50, blank=True, null=True)
     unit_name = models.CharField(max_length=100)
     unit_code = models.CharField(max_length=10)
