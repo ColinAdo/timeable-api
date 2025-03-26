@@ -8,11 +8,15 @@ from .views import (
     TimetableDataView,
     TimetableNameView,
     SubscribeView,
+    UnitsView,
+    SubscriptionView,
     mpesa_callback
 )
 
 urlpatterns = [
     path('mpesa/callback/', mpesa_callback, name='mpesa_callback'),
+    path('user/units/', UnitsView.as_view(), name='units'),
+    path('user/subscription/', SubscriptionView.as_view(), name='subscription'),
     path('subscribe/', SubscribeView.as_view(), name='subscribe'),
     path('upload/units/', UploadUnitsView.as_view(), name='upload_units'),
     path('timetable/names/', TimetableNameView.as_view(), name='timetable_name'),
