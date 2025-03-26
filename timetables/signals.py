@@ -4,6 +4,7 @@ from django.dispatch import receiver
 from channels.layers import get_channel_layer  # type: ignore
 from asgiref.sync import async_to_sync
 from .models import Subscription
+from auths.models import CustomUser
 
 
 @receiver(post_save, sender=Subscription)
@@ -23,3 +24,14 @@ def send_subscription_notification(sender, instance, created, **kwargs):
             },
         )
 
+
+@receiver(post_save, sender=CustomUser)
+def create_subscription(sender, instance, created, **kwargs):
+    if created:
+        Subscription.objects.create(
+            user=instance,
+            amount=0.0,
+            transaction_id=None,
+            tier='basic',
+            status='unpaid'
+        )
