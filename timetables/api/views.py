@@ -54,7 +54,7 @@ class SubscribeView(APIView):
         transaction_desc = 'Description'
         
         # Use your ngrok URL instead of the Daraja default
-        callback_url = "https://dd68-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
+        callback_url = "https://ed69-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
 
         response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
         if hasattr(response, 'json'):
@@ -106,12 +106,12 @@ def mpesa_callback(request):
 
             # If payment was successful, save subscription
             if result_code == 0:
-                Subscription.objects.create(
-                    user=pending_transaction.user,
-                    amount=pending_transaction.amount,
-                    tier="Premium",
-                    status="paid",
-                )
+                subscription = Subscription.objects.get(user=pending_transaction.user)
+                subscription.amount = pending_transaction.amount
+                subscription.status = "paid"
+                subscription.tier = "Premium"
+                subscription.save()
+
                 pending_transaction.delete()
                 print(f"✅ Subscription created for user: {pending_transaction.user}")
                 return JsonResponse({"message": "Subscription successfully created"}, status=200)
