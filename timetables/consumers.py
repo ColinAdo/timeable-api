@@ -156,9 +156,9 @@ class TimetableConsumer(AsyncWebsocketConsumer):
             'rowId': rowId,
         }))
 
-    async def subscription_created(self, event):
+    async def subscription_updated(self, event):
         await self.send(text_data=json.dumps({
-            "event": "subscription_created",
+            "event": "subscription_updated",
             "message": event["message"],
             "tier": event["tier"],
             "amount": event["amount"],
