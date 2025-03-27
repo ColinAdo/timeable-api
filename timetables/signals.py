@@ -9,20 +9,19 @@ from auths.models import CustomUser
 
 @receiver(post_save, sender=Subscription)
 def send_subscription_notification(sender, instance, created, **kwargs):
-    if created:
-        channel_layer = get_channel_layer()
-        user_channel = instance.user.username  
+    channel_layer = get_channel_layer()
+    user_channel = instance.user.username  
 
-        async_to_sync(channel_layer.group_send)(
-            user_channel,
-            {
-                "type": "subscription_created",
-                "message": "Subscription successfully created",
-                "amount": str(instance.amount),  
-                "tier": instance.tier,
-                "status": instance.status,
-            },
-        )
+    async_to_sync(channel_layer.group_send)(
+        user_channel,
+        {
+            "type": "subscription_updated",
+            "message": "Subscription successfully updated" if not created else "Subscription successfully created",
+            "amount": str(instance.amount),  
+            "tier": instance.tier,
+            "status": instance.status,
+        },
+    )
 
 
 @receiver(post_save, sender=CustomUser)
