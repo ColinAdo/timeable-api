@@ -26,9 +26,6 @@ class Timetable(models.Model):
     group = models.CharField(max_length=200, default=0, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
-    class Meta:
-        ordering = ('day',)
-
     def __str__(self):
         return f'{self.user.username} timetable'
 
