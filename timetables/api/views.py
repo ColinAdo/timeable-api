@@ -3,8 +3,8 @@ import json
 import pandas as pd
 
 from django.db.models import Max
-from django.http import HttpResponse, JsonResponse
 from django.core.mail import EmailMessage
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.views import APIView
