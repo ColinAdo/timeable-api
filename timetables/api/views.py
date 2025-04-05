@@ -27,6 +27,7 @@ class SubscriptionView(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
+# Units view
 class UnitsView(APIView):
     def get(self, request, format=None):
         units = Unit.objects.filter(user=request.user)
