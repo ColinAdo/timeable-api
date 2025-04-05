@@ -40,7 +40,7 @@ class UnitsView(APIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
-
+# Subscribe view
 class SubscribeView(APIView):
     def post(self, request, format=None):
         user = request.user
