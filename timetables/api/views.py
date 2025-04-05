@@ -46,6 +46,7 @@ class UnitsView(APIView):
 
 # Subscribe view
 class SubscribeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def post(self, request, format=None):
         user = request.user
         number = request.data.get('phone_number')
