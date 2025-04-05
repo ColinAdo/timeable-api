@@ -19,7 +19,7 @@ from django_daraja.mpesa.core import MpesaClient  # type: ignore
 
 # Get user Subscription view
 class SubscriptionView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
         subscription = Subscription.objects.get(user=request.user)
 
@@ -31,6 +31,7 @@ class SubscriptionView(APIView):
 
 # Units view
 class UnitsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request, format=None):
         units = Unit.objects.filter(user=request.user)
 
