@@ -17,6 +17,7 @@ from timetables.models import Timetable, Unit, PendingTransaction, Subscription
 from .genetic_algoritm import generate_timetable, double_check_timetable
 from django_daraja.mpesa.core import MpesaClient  # type: ignore
 
+# Get user Subscription view
 class SubscriptionView(APIView):
     def get(self, request, format=None):
         subscription = Subscription.objects.get(user=request.user)
