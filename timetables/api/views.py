@@ -54,7 +54,7 @@ class SubscribeView(APIView):
 
         cl = MpesaClient()
         phone_number = number
-        amount = int(amnt)  # Ensure the amount is an integer
+        amount = int(amnt) 
         account_reference = 'reference'
         transaction_desc = 'Description'
         
