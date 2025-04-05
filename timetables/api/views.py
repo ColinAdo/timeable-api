@@ -19,6 +19,7 @@ from django_daraja.mpesa.core import MpesaClient  # type: ignore
 
 # Get user Subscription view
 class SubscriptionView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     def get(self, request, format=None):
         subscription = Subscription.objects.get(user=request.user)
 
