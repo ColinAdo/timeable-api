@@ -9,6 +9,7 @@ class UnitSerializer(serializers.ModelSerializer):
         model = Unit
         fields = '__all__'
 
+# Timetable serializer
 class TimetableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Timetable
