@@ -124,7 +124,7 @@ def fitness_function(timetable):
     return max(score, 1)
 
 
-
+# Selection function
 def selection(population, fitness_values):
     if sum(fitness_values) == 0:  
         fitness_values = [1] * len(fitness_values)
