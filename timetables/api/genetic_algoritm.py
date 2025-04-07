@@ -96,7 +96,7 @@ def initialize_population(units, population_size, start_time, end_time, duration
 
 
 def fitness_function(timetable):
-    score = 1  # Start with 1 to avoid zero
+    score = 1
 
     daily_units = {}
 
