@@ -127,7 +127,7 @@ def fitness_function(timetable):
 
 def selection(population, fitness_values):
     if sum(fitness_values) == 0:  
-        fitness_values = [1] * len(fitness_values)  # Assign default weights
+        fitness_values = [1] * len(fitness_values)
 
     return random.choices(population, weights=fitness_values, k=len(population))
 
