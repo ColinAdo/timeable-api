@@ -100,7 +100,7 @@ def fitness_function(timetable):
 
     daily_units = {}
 
-    for unit, day, class_start_time, class_end_time in timetable:
+    for unit, day in timetable:
         if day not in daily_units:
             daily_units[day] = []
         daily_units[day].append(unit)
