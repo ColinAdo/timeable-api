@@ -1,0 +1,8 @@
+site_name: Automatic Timetable Generation System
+theme:
+  name: material
+nav:
+  - Home: index.md
+  - Setup: setup.md
+  - API Reference: api.md
+  - Usage Guide: usage.md
