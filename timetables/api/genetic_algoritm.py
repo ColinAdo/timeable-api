@@ -168,6 +168,7 @@ def mutation(individual, mutation_rate, start_time, end_time, duration, first_co
                 retries -= 1
     return individual
 
+# Main function to generate timetable
 def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     population = initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain)
     
