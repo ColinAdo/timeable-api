@@ -109,7 +109,7 @@ def fitness_function(timetable):
         year_semester_count = {}
 
         for unit in units:
-            year_semester = unit[2]  # Year and semester format like Y1S1, Y1S2
+            year_semester = unit[2]
             if year_semester not in year_semester_count:
                 year_semester_count[year_semester] = 0
             year_semester_count[year_semester] += 1
@@ -121,7 +121,7 @@ def fitness_function(timetable):
             elif count == 2:
                 score += 5  # Reward valid timetables
 
-    return max(score, 1)  # Ensure score is never zero
+    return max(score, 1)
 
 
 
