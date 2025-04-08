@@ -5,12 +5,12 @@ from .views import (
     TimetableView,
     UploadUnitsView, 
     ExportToEmailView,
-    GenerateTimetableView, 
     TimetableDataView,
     TimetableNameView,
     SubscribeView,
     SubscriptionView,
-    mpesa_callback
+    mpesa_callback,
+    GenerateTimetableView, 
 )
 
 urlpatterns = [
