@@ -1,6 +1,7 @@
 from django.urls import path
 
 from .views import (
+    UnitsView,
     TimetableView,
     UploadUnitsView, 
     ExportToEmailView,
@@ -8,7 +9,6 @@ from .views import (
     TimetableDataView,
     TimetableNameView,
     SubscribeView,
-    UnitsView,
     SubscriptionView,
     mpesa_callback
 )
