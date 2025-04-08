@@ -6,10 +6,10 @@ from .views import (
     SubscribeView,
     mpesa_callback,
     UploadUnitsView, 
+    SubscriptionView,
     ExportToEmailView,
     TimetableDataView,
     TimetableNameView,
-    SubscriptionView,
     GenerateTimetableView, 
 )
 
