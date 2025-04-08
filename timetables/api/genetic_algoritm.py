@@ -37,7 +37,6 @@ def double_check_timetable(timetable, prompt):
 def generate_random_time(start_time, end_time, duration, first_constrain=None, second_constrain=None):
     start_datetime = datetime.strptime(start_time, "%H:%M" if len(start_time) == 5 else "%H:%M:%S")
 
-    # Only parse constraints if they are provided
     end_datetime = datetime.strptime(end_time, "%H:%M" if len(end_time) == 5 else "%H:%M:%S")
     latest_start_time = end_datetime - timedelta(hours=duration)
 
