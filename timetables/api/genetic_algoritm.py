@@ -94,7 +94,7 @@ def initialize_population(units, population_size, start_time, end_time, duration
         population.append(timetable)
     return population
 
-
+# Fitnessfunction
 def fitness_function(timetable):
     score = 1
 
