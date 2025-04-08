@@ -14,8 +14,8 @@ from .views import (
 )
 
 urlpatterns = [
-    path('mpesa/callback/', mpesa_callback, name='mpesa_callback'),
     path('user/units/', UnitsView.as_view(), name='units'),
+    path('mpesa/callback/', mpesa_callback, name='mpesa_callback'),
     path('user/subscription/', SubscriptionView.as_view(), name='subscription'),
     path('subscribe/', SubscribeView.as_view(), name='subscribe'),
     path('upload/units/', UploadUnitsView.as_view(), name='upload_units'),
