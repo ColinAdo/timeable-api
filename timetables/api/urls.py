@@ -3,13 +3,13 @@ from django.urls import path
 from .views import (
     UnitsView,
     TimetableView,
+    mpesa_callback,
     UploadUnitsView, 
     ExportToEmailView,
     TimetableDataView,
     TimetableNameView,
     SubscribeView,
     SubscriptionView,
-    mpesa_callback,
     GenerateTimetableView, 
 )
 
