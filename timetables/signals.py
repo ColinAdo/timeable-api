@@ -1,7 +1,9 @@
-from django.db.models.signals import post_save
 from django.dispatch import receiver
-from channels.layers import get_channel_layer  # type: ignore
+from django.db.models.signals import post_save
+
 from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer  # type: ignore
+
 from .models import Subscription
 from auths.models import CustomUser
 
