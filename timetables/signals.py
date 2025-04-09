@@ -23,7 +23,7 @@ def send_subscription_notification(sender, instance, created, **kwargs):
         },
     )
 
-
+# Add post save signal to wedsocket
 @receiver(post_save, sender=CustomUser)
 def create_subscription(sender, instance, created, **kwargs):
     if created:
