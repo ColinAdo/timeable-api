@@ -1,3 +1,5 @@
+from datetime import time
+
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
@@ -7,7 +9,6 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from timetables.models import Timetable
 
-from datetime import time
 
 # Timetable api test case
 class TimetableApiTestCase(APITestCase):
