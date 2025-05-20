@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+from datetime import datetime
 
 from django.db.models import Max
 from django.core.mail import EmailMessage
@@ -59,7 +60,7 @@ class SubscribeView(APIView):
         transaction_desc = 'Description'
         
         # Use your ngrok URL instead of the Daraja default
-        callback_url = "https://ed69-102-0-4-206.ngrok-free.app/api/v1/mpesa/callback/"
+        callback_url = f"{settings.NGROK_URL}/api/v1/mpesa/callback/"
 
         response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
         if hasattr(response, 'json'):
@@ -295,8 +296,13 @@ class ExportToEmailView(APIView):
                 'Unit Code': timetable.unit_code,
                 'Unit Name': timetable.unit_name,
                 'Day': timetable.day,
-                'Start Time': timetable.start_time,
-                'End Time': timetable.end_time
+                'Start Time': datetime.strptime(timetable.start_time, "%H:%M:%S").strftime("%H:%M"),
+                'End Time': datetime.strptime(timetable.end_time, "%H:%M:%S").strftime("%H:%M"),
+                'Lecturer':timetable.lecturer,
+                'Campus': timetable.campus,
+                'Mode': timetable.mode_of_study,
+                'Room': timetable.lecture_room,
+                'Group': timetable.group,
             }
             for timetable in timetables
         ]
