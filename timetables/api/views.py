@@ -80,6 +80,7 @@ class SubscribeView(APIView):
 
         return HttpResponse(response)
 
+# mpesa callback
 @csrf_exempt
 def mpesa_callback(request):
     if request.method == "POST":

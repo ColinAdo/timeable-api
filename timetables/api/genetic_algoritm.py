@@ -37,7 +37,6 @@ def double_check_timetable(timetable, prompt):
 def generate_random_time(start_time, end_time, duration, first_constrain=None, second_constrain=None):
     start_datetime = datetime.strptime(start_time, "%H:%M" if len(start_time) == 5 else "%H:%M:%S")
 
-    # Only parse constraints if they are provided
     end_datetime = datetime.strptime(end_time, "%H:%M" if len(end_time) == 5 else "%H:%M:%S")
     latest_start_time = end_datetime - timedelta(hours=duration)
 
@@ -94,13 +93,13 @@ def initialize_population(units, population_size, start_time, end_time, duration
         population.append(timetable)
     return population
 
-
+# Fitnessfunction
 def fitness_function(timetable):
     score = 1
 
     daily_units = {}
 
-    for unit, day, class_start_time, class_end_time in timetable:
+    for unit, day in timetable:
         if day not in daily_units:
             daily_units[day] = []
         daily_units[day].append(unit)
@@ -109,7 +108,7 @@ def fitness_function(timetable):
         year_semester_count = {}
 
         for unit in units:
-            year_semester = unit[2]  # Year and semester format like Y1S1, Y1S2
+            year_semester = unit[2]
             if year_semester not in year_semester_count:
                 year_semester_count[year_semester] = 0
             year_semester_count[year_semester] += 1
@@ -121,13 +120,13 @@ def fitness_function(timetable):
             elif count == 2:
                 score += 5  # Reward valid timetables
 
-    return max(score, 1)  # Ensure score is never zero
+    return max(score, 1)
 
 
-
+# Selection function
 def selection(population, fitness_values):
     if sum(fitness_values) == 0:  
-        fitness_values = [1] * len(fitness_values)  # Assign default weights
+        fitness_values = [1] * len(fitness_values)
 
     return random.choices(population, weights=fitness_values, k=len(population))
 
@@ -168,6 +167,7 @@ def mutation(individual, mutation_rate, start_time, end_time, duration, first_co
                 retries -= 1
     return individual
 
+# Main function to generate timetable
 def generate_timetable(units, population_size, generations, mutation_rate, start_time, end_time, duration, first_constrain=None, second_constrain=None):
     population = initialize_population(units, population_size, start_time, end_time, duration, first_constrain, second_constrain)
     
