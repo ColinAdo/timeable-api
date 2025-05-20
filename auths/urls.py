@@ -5,6 +5,7 @@ from .views import (
     CustomProviderAuthView,
     CustomTokenRefreshView,
     CustomTokenObtainPairView,
+    RegisterView,
 )
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
         CustomProviderAuthView.as_view(),
         name='provider-auth'
     ),
+    path('register/', RegisterView.as_view(), name='register'),
     path('jwt/create/', CustomTokenObtainPairView.as_view()),
     path('jwt/refresh/', CustomTokenRefreshView.as_view()),
     path('jwt/verify/', CustomTokenVerifyView.as_view()),
