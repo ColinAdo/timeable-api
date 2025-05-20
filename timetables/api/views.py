@@ -179,6 +179,7 @@ class TimetableView(APIView):
             {
                 'id': timetable.id,
                 'name': timetable.name,
+                'year': timetable.year,
                 'unit_code': timetable.unit_code,
                 'unit_name': timetable.unit_name,
                 'day': timetable.day,
@@ -253,6 +254,7 @@ class GenerateTimetableView(APIView):
                         user=request.user,
                         unit_name=session[0][0],  
                         unit_code=session[0][1],  
+                        year=session[0][2],
                         day=session[1],              
                         start_time=session[2],
                         end_time=session[3],    
@@ -266,7 +268,8 @@ class GenerateTimetableView(APIView):
                     Timetable.objects.create( 
                         user=request.user,
                         unit_name=session["unit_name"],  
-                        unit_code=session["unit_code"],  
+                        unit_code=session["unit_code"],
+                        year=session["year"],  
                         day=session["day"],              
                         start_time=session["start_time"],
                         end_time=session["end_time"],    
@@ -294,6 +297,7 @@ class ExportToEmailView(APIView):
         
         data = [
             {
+                'Year': timetable.year,
                 'Unit Code': timetable.unit_code,
                 'Unit Name': timetable.unit_name,
                 'Day': timetable.day,

@@ -26,6 +26,7 @@ class TimetableAdmin(admin.ModelAdmin):
         'mode_of_study',
         'lecture_room',
         'group',
+        'year',
     ]
 
 # Subscription admin
