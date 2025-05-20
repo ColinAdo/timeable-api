@@ -94,12 +94,39 @@ def initialize_population(units, population_size, start_time, end_time, duration
     return population
 
 # Fitnessfunction
+# def fitness_function(timetable):
+#     score = 1
+
+#     daily_units = {}
+
+#     for unit, day in timetable:
+#         if day not in daily_units:
+#             daily_units[day] = []
+#         daily_units[day].append(unit)
+
+#     for day, units in daily_units.items():
+#         year_semester_count = {}
+
+#         for unit in units:
+#             year_semester = unit[2]
+#             if year_semester not in year_semester_count:
+#                 year_semester_count[year_semester] = 0
+#             year_semester_count[year_semester] += 1
+        
+#         # Penalize if more than 2 units for the same academic year and semester in a day
+#         for year_semester, count in year_semester_count.items():
+#             if count > 2:
+#                 score -= 10 * (count - 2)  # Heavy penalty for each extra unit beyond 2
+#             elif count == 2:
+#                 score += 5  # Reward valid timetables
+
+#     return max(score, 1)
+
 def fitness_function(timetable):
     score = 1
-
     daily_units = {}
 
-    for unit, day in timetable:
+    for unit, day, _, _, in timetable:
         if day not in daily_units:
             daily_units[day] = []
         daily_units[day].append(unit)
@@ -116,11 +143,12 @@ def fitness_function(timetable):
         # Penalize if more than 2 units for the same academic year and semester in a day
         for year_semester, count in year_semester_count.items():
             if count > 2:
-                score -= 10 * (count - 2)  # Heavy penalty for each extra unit beyond 2
+                score -= 10 * (count - 2)
             elif count == 2:
-                score += 5  # Reward valid timetables
+                score += 5
 
     return max(score, 1)
+
 
 
 # Selection function
